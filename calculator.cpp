@@ -10,8 +10,8 @@ using namespace std;
 enum tErroCode
 {
   kErrorCode_NoError = 0,
-	kErrorCode_DevideByZero = 1,
-	kErrorCode_InvalitExpressionFound = 2
+  kErrorCode_DevideByZero = 1,
+  kErrorCode_InvalitExpressionFound = 2
 };
 
 double Calculate(const char* pszCalcExpr, tErroCode& errorCode)
