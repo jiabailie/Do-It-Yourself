@@ -1,4 +1,0 @@
-CPP
-===
-
-Calculator
