@@ -47,11 +47,14 @@ double Calculate(const char* pszCalcExpr, tErroCode& errorCode)
 				{
 					number.push_back(pszCalcExpr[i]); 
 				}
-				if((pszCalcExpr[i] == '+') || (pszCalcExpr[i] == '-') || (pszCalcExpr[i] == '*') || (pszCalcExpr[i] == '/'))
+				if((pszCalcExpr[i] == '+') || (pszCalcExpr[i] == '-') || 
+				   (pszCalcExpr[i] == '*') || (pszCalcExpr[i] == '/'))
 				{
 					c1 = compare[pszCalcExpr[i]];
 					c2 = 0;
-					if(symbol.size() > 0 && ((symbol.top() == '+') || (symbol.top() == '-') || (symbol.top() == '*') || (symbol.top() == '/')))
+					if(symbol.size() > 0 && 
+					  ((symbol.top() == '+') || (symbol.top() == '-') || 
+					   (symbol.top() == '*') || (symbol.top() == '/')))
 					{
 						c2 = compare[symbol.top()];
 					}
@@ -67,7 +70,9 @@ double Calculate(const char* pszCalcExpr, tErroCode& errorCode)
 						{
 							c1 = compare[pszCalcExpr[i]];
 							c2 = 0;
-							if(symbol.size() > 0 && ((symbol.top() == '+') || (symbol.top() == '-') || (symbol.top() == '*') || (symbol.top() == '/')))
+							if(symbol.size() > 0 && 
+							 ((symbol.top() == '+') || (symbol.top() == '-') || 
+							  (symbol.top() == '*') || (symbol.top() == '/')))
 							{
 								c2 = compare[symbol.top()];
 							}
@@ -103,11 +108,16 @@ double Calculate(const char* pszCalcExpr, tErroCode& errorCode)
 			number.pop_back();
 		}
 
-		if((pszCalcExpr[i] == '+') || (pszCalcExpr[i] == '-') || (pszCalcExpr[i] == '*') || (pszCalcExpr[i] == '/'))
+		if((pszCalcExpr[i] == '+') || 
+		   (pszCalcExpr[i] == '-') || 
+		   (pszCalcExpr[i] == '*') || 
+		   (pszCalcExpr[i] == '/'))
 		{
 			c1 = compare[pszCalcExpr[i]];
 			c2 = 0;
-			if(symbol.size() > 0 && ((symbol.top() == '+') || (symbol.top() == '-') || (symbol.top() == '*') || (symbol.top() == '/')))
+			if(symbol.size() > 0 && 
+			 ((symbol.top() == '+') || (symbol.top() == '-') || 
+			  (symbol.top() == '*') || (symbol.top() == '/')))
 			{
 				c2 = compare[symbol.top()];
 			}
@@ -122,7 +132,9 @@ double Calculate(const char* pszCalcExpr, tErroCode& errorCode)
 				{
 					c1 = compare[pszCalcExpr[i]];
 					c2 = 0;
-					if(symbol.size() > 0 && ((symbol.top() == '+') || (symbol.top() == '-') || (symbol.top() == '*') || (symbol.top() == '/')))
+					if(symbol.size() > 0 && 
+					 ((symbol.top() == '+') || (symbol.top() == '-') || 
+					  (symbol.top() == '*') || (symbol.top() == '/')))
 					{
 						c2 = compare[symbol.top()];
 					}
