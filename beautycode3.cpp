@@ -53,7 +53,8 @@ int triangle(vector<int> judge)
 		{
 			for(k = j + 1; k <= len - 1 && !flag; k++)
 			{
-				if((judge[i] + judge[j] > judge[k]) &&  (judge[i] + judge[k] > judge[j]) && (judge[j] + judge[k] > judge[i]))
+				if((judge[i] + judge[j] > judge[k]) &&  (judge[i] + judge[k] > judge[j]) && 
+				   (judge[j] + judge[k] > judge[i]))
 				{
 					flag = 1;
 				}
