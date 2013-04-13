@@ -11,59 +11,24 @@ using namespace std;
 
 #define MAX_NUM 110
 
-//两个大数比较大小
+// whether s1 >= s2
 int bige(char s1[], char s2[])
 {
-  int q = 0;
-	while (s1[q] == '0')
+	int ret = 1;
+	int l1 = strlen(s1);
+	int l2 = strlen(s2);
+	if(l1 > l2)	{ ret = 1; }
+	if(l1 < l2) { ret = 0;	}
+	if(l1 == l2)
 	{
-		q++;
-	}
-	strcpy(s1, s1 + q);
-	if (strlen(s1) == 0)
-	{
-		s1[0] = '0';
-		s1[1] = 0;
-	}
-
-	q = 0;
-	while (s2[q] == '0')
-	{
-		q++;
-	}
-	strcpy(s2, s2 + q);
-	if (strlen(s2) == 0)
-	{
-		s2[0] = '0';
-		s2[1] = 0;
-	}
-
-	int len1 = strlen(s1);
-	int len2 = strlen(s2);
-	if (len1 > len2)
-	{
-		return 1;
-	}
-	else if (len1 < len2)
-	{
-		return 0;
-	}
-	else
-	{
-		for (int i = 0; i < len1; i++)
+		for(int i = 0; i < l1; i++)
 		{
-			if (s1[i] > s2[i])
-			{
-				return 1;
-			}
-			else if (s1[i] < s2[i])
-			{
-				return 0;
-			}
+			if(s1[i] > s2[i]) {	ret = 1; break; }
+			if(s1[i] < s2[i]) {	ret = 0; break; }
 		}
 	}
 
-	return 1;
+	return ret;
 }
 
 //两个大数比较大小
