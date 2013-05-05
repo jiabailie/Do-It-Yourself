@@ -42,7 +42,7 @@ BEGIN
 	select @WinnerLevel = dbo.GetUserLevel_F(@WinnerID) , @LoserLevel= dbo.GetUserLevel_F(@LoserID);
 	select @SeasonState = SysPlaySeasonState from [system];    ---如果为0则表示为常规赛，为1表示季后赛
 
-	------6-24 补充  往 PlayGameOnline 表里添加记录
+	------往 PlayGameOnline 表里添加记录
 	insert into [PlayGameOnline]
 	(PGO_WinnerID,PGO_LoserID,PGOUser1ClassAtThatTime,PGOUser2ClassAtThatTime,PGOGameID, PGOIsPlayoff, PGODate, PGOHow2win , PGOIsInvite,PGOWinnerScore,PGOLoserScore)
 	values
