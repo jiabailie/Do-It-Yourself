@@ -1,3 +1,5 @@
+// Utilities: a Javascript class for puworld.com
+// Utilities.js Copyright (c) 2009 Victor Zhu. ver: 1.01 P.H.Consultant
 // 本程序需要　jQuery.js类库的支持。　
 
 ///--- 去空格
