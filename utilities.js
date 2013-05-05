@@ -7,29 +7,24 @@ String.prototype.Trim = function() {
     return this.replace(/(^\s*)|(\s*$)/g, "");
 }
 
-　　
 String.prototype.Occurs = function(ch) {
     return this.split(ch).length - 1;
 }
 
-　　
 String.prototype.isDigit = function() {
     var s = this.Trim();
     return (s.replace(/\d/g, "").length == 0);
 }
-　　
-　　
+
 String.prototype.isAlpha = function() {
     return (this.replace(/\w/g, "").length == 0);
 }
 
-　　
 String.prototype.isNumber = function() {
     var s = this.Trim();
     return (s.search(/^[+-]?[0-9.]*$/) >= 0);
 }
 
-　　
 String.prototype.lenb = function() {
     return this.replace(/[^\x00-\xff]/g, "**").length;
 }
@@ -51,8 +46,7 @@ String.prototype.isEmail = function() {
         return false;
     }
 }
-　　
-　　
+
 String.prototype.isInList = function(value) {
     var str = this.split(",");
 
