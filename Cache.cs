@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-
 using System.Web;
 using System.Collections;
 using System.Web.Caching;
@@ -37,7 +36,6 @@ namespace PHConsultant.Common
 
     }
 
-
     /// <summary>
     /// 默认缓存管理类
     /// </summary>
@@ -66,7 +64,6 @@ namespace PHConsultant.Common
                     webCache = System.Web.HttpRuntime.Cache;
             }
         }
-
 
 
         //设置到期相对时间[单位：／秒] 可从WEB.CONFIG文件中设置
@@ -119,7 +116,6 @@ namespace PHConsultant.Common
         }
 
 
-
         /// <summary>
         /// 加入当前对象到缓存中,并对相关文件建立依赖
         /// </summary>
@@ -140,7 +136,6 @@ namespace PHConsultant.Common
         }
 
 
-
         /// <summary>
         /// 加入当前对象到缓存中,并使用依赖键
         /// </summary>
@@ -159,7 +154,6 @@ namespace PHConsultant.Common
 
             webCache.Insert(objId, o, dep, System.DateTime.Now.AddMinutes(TimeOut), System.Web.Caching.Cache.NoSlidingExpiration, System.Web.Caching.CacheItemPriority.High, callBack);
         }
-
 
 
         //建立回调委托的一个实例
