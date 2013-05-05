@@ -57,8 +57,9 @@ BEGIN
 	---select * from #TmpCLass  ;
 
 	DECLARE User_cur cursor  for	
-	(	select UserID, (cashTotal/userTotal) as HisCash  from #TmpUser left join #TmpCLass on #TmpUser.class = #TmpCLass.class
-	 );	
+	(	
+		select UserID, (cashTotal/userTotal) as HisCash  from #TmpUser left join #TmpCLass on #TmpUser.class = #TmpCLass.class
+	);	
 	------ 这个查询语句结果是 [用户ID][该用户本次返利额]=该层总金额/该层总人数
 	open User_cur ;
 	---遍历那些符合要求的同学-------
@@ -84,4 +85,3 @@ BEGIN
 	set @msg='成功';
 END
 ------------------------------------
-
