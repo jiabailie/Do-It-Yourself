@@ -7,7 +7,7 @@ ALTER  PROCEDURE [dbo].[StatOnlineGameCash]
 @msg varchar(max) out
 AS
 BEGIN
-  declare @level int,@uid int,@hisCash float;
+	declare @level int,@uid int,@hisCash float;
 	------查看 系统表的Sys_Last_Statistic_Date_Online，确认此次统计距离上次统计的时间要大于Sys_statis_Least_period_Online
 	declare @lastStatDdate smalldatetime,@leastStatPeriod float;
 	select @lastStatDdate =Sys_Last_Statistic_Date_Online,@leastStatPeriod = Sys_statis_Least_period_Online from [system];
@@ -26,7 +26,7 @@ BEGIN
 	exec GetLeastPlayOffRandomNumber @LeastPlayOffNumber output;
 
 
-	---------首先，如果是没有参与季后赛的同学，呵呵，打折，而且没有钱
+	---------首先，如果是没有参与季后赛的同学，打折，而且没有钱
 	declare @NoJoinPlayOffCoeff float;
 	select @NoJoinPlayOffCoeff = Sys_No_Play_Off_coefficient from [system];
 	update [user] set 
@@ -34,7 +34,7 @@ BEGIN
 	UserPlayOffRandomCount = 0 
 	where  dbo.GetUserJoinPlayOff(UserID)=0;
 
-	---------然后，如果是参与了季后赛，但是随机盘数不够的同学，呵呵，再打折，而且没有钱
+	---------然后，如果是参与了季后赛，但是随机盘数不够的同学，再打折，而且没有钱
 	declare @PlayOffInsufficeCoeff float;
 	select 	@PlayOffInsufficeCoeff= Sys_Play_Off_insuffice_coef from [system];
 	update [user] set 
@@ -84,3 +84,4 @@ BEGIN
 	set @msg='成功';
 END
 ------------------------------------
+
