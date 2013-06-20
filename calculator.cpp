@@ -246,7 +246,7 @@ double Calculate(const char* pszCalcExpr, tErroCode& errorCode)
 				{
 				case '+':
 				    if((n1 > 0 && n2 > 0 && n1 + n2 < 0) || (n1 < 0 && n2 < 0 && n1 + n2 > 0)) { errorCode = kErrorCode_Overflow; }
-					else                                                                       { result.push(n2 + n1); }
+					else                                                                   { result.push(n2 + n1); }
 					break;
 				case '-':
 					result.push(n2 - n1);
@@ -254,7 +254,7 @@ double Calculate(const char* pszCalcExpr, tErroCode& errorCode)
 				case '*':
 				    m = n1 * n2;
 				    if(m / n1 != n2) { errorCode = kErrorCode_Overflow; }
-					else             { result.push(n2 * n1); }
+					else         { result.push(n2 * n1); }
 					break;
 				case '/':
 					if(n1 == 0) { errorCode = kErrorCode_DevideByZero; }
