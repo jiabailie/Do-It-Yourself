@@ -29,6 +29,6 @@ function GetWebService(url,querystring,paramtype) {
     xmlHttp.open('POST', url, false);
     xmlHttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
     xmlHttp.send(querystring);
-    var Result = xmlHttp.responseXML; //.selectSingleNode(paramtype).text; //这是返回XML中的节点内容
+    var Result = xmlHttp.responseXML; //返回XML中的节点内容
     return Result;
 }
