@@ -17,3 +17,6 @@ just some code segments.
 
 /configuration
 some configuration files, which can be used for environment setting.
+
+/gobang
+a gobang game code by javascript, which comes from internet.
