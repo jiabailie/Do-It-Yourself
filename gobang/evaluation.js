@@ -79,8 +79,6 @@ var Evaluation = function() {
 		analysisLine = position;
 		analyPos = chessPos;
 		chessType = analysisLine[ analyPos ];
-		//leftEdge = analyPos;
-		//rightEdge = analyPos;
 		gridNum = analysisLine.length - 1;
 
 		//初始化记录存放数组
@@ -88,20 +86,6 @@ var Evaluation = function() {
 		for (var i = 0; i < 30; i++) {
 			lineRecord[ i ] = TOBEANALSIS;	
 		}
-
-		/*while( leftEdge > 0 ) {
-			if( analysisLine[ leftEdge - 1 ] != chessType ) {
-				break;
-			}	
-			leftEdge--;
-		}
-		
-		while( rightEdge < gridNum ) {
-			if( analysisLine[ rightEdge + 1 ] != chessType ) {
-				break;
-			}
-			rightEdge++;
-		}*/
 
 		var edges = getEdgeRange( analysisLine, analyPos );
 		leftEdge = edges.leftEdge;
@@ -123,10 +107,6 @@ var Evaluation = function() {
 			}
 			rightRange++;
 		}
-
-		//console.log( leftEdge + '-' + rightEdge )
-		//console.log( leftRange )
-		//console.log( rightRange )
 		
 		//小于4(5个子)无意义
 		if( rightRange - leftRange < 4 ) {
@@ -149,7 +129,6 @@ var Evaluation = function() {
 		
 		//四连
 		if( rightEdge - leftEdge == 3 ) {
-			//console.log( analysisLine )
 			var leftFour = false;
 			if( leftEdge > 0 ) {
 				if( analysisLine[ leftEdge - 1 ] == NO_CHESS ) {
@@ -174,7 +153,6 @@ var Evaluation = function() {
 					lineRecord[ analyPos ] = SFOUR;
 				}
 			}
-			//console.log( lineRecord )
 			return;
 		}
 
@@ -231,7 +209,6 @@ var Evaluation = function() {
 		//二连
 		if( rightEdge - leftEdge == 1 ) {
 			var leftTwo = false;
-			//var leftTree = false;
 			if( leftEdge  > 2 ){ 
 				if( analysisLine[ leftEdge - 1 ] == NO_CHESS ) {
 					if( analysisLine[ leftEdge - 2 ] == analysisLine[ leftEdge ] ) {
@@ -314,10 +291,6 @@ var Evaluation = function() {
 	}
 
 	var analysisVertical = function( board, i, j ) {
-		/*var array = [];
-		for (var s = 0; s < GRID_NUM; s++) {
-			array[ s ] = board[ s ][ j ];
-		};*/
 		var result = getTopToBottom( board, i, j );
 		var array = result.array;
 
@@ -329,7 +302,6 @@ var Evaluation = function() {
 			}
 		};
 	}
-
 
 	//左上到右下分析
 	var getLTToRB = function( board, i, j ) {
@@ -361,24 +333,6 @@ var Evaluation = function() {
 	}
 
 	var analysisLeft = function( board, i, j ) {
-		/*var array = [];
-		var x;
-		var y;
-
-		if( i < j ) {
-			x = j - i;
-			y = 0;
-		} else {
-			x = 0;
-			y = i - j;
-		}
-
-		for (var k = 0; k < GRID_NUM; k++) {
-			if( y + k >= GRID_NUM || x + k >= GRID_NUM ) {
-				break;
-			}
-			array[ k ] = board[ y + k ][ x + k ];
-		}*/
 		var result = getLTToRB( board, i, j );
 		var array = result.array;
 		var x = result.x;
@@ -394,7 +348,6 @@ var Evaluation = function() {
 	}
 
 	//右下到右上分析
-
 	var getLBToRT = function( board, i, j ) {
 		var array = [];
 		var maxIndex = GRID_NUM - 1
@@ -425,26 +378,6 @@ var Evaluation = function() {
 	}
 
 	var analysisRight = function( board, i, j ) {
-		/*var array = [];
-		var maxIndex = GRID_NUM - 1
-		var x;
-		var y;
-
-		if( maxIndex  - i < j ) {
-			y = maxIndex;
-			x = j - maxIndex + i;                                              
-		} else {
-			x = 0;
-			y = i + j;
-		}
-
-		for (var s = 0; s < GRID_NUM; s++) {
-			if( x + s > maxIndex || y - s < 0 ) {
-				break;
-			}
-			array[ s ] = board[ y - s ][ x + s ];
-		};*/
-
 		var result = getLBToRT( board, i, j );
 		var array = result.array;
 		var x = result.x;
@@ -460,11 +393,8 @@ var Evaluation = function() {
 	}
 
 	this.eval = function( board, side ) {
-	    testValue ++
-
-		resetData();
-
-		//return Math.random() * 10 - Math.random() * 10;
+	    testValue++;
+	    resetData();
 
         for (var i = 0; i < GRID_NUM; i++) {
         	for (var j = 0; j < GRID_NUM; j++) {
@@ -530,31 +460,6 @@ var Evaluation = function() {
         if( typeCount[ PERSON ][ SFOUR ] > 1 ) {
         	typeCount[ PERSON ][ FOUR ]++;
         }
-
-        //var bestValue = {};
-        //bestValue.typeCount = typeCount;
-
-        /*if( side == MACHINE ) {
-         	if( typeCount[ MACHINE ][ FIVE ] ) {
-        		bestValue.value = 9999;
-        		return bestValue;
-        	}
-
-        	if( typeCount[ PERSON ][ FIVE ] ) {
-        		bestValue.value = -9999;
-        		return bestValue;
-        	}
-        } else {
-        	if( typeCount[ MACHINE ][ FIVE ] ) {
-        		bestValue.value = 9999;
-        		return bestValue;
-        	}
-
-        	if( typeCount[ PERSON ][ FIVE ] ) {
-        		bestValue.value = -9999;
-        		return bestValue;
-        	}
-        }*/
     	
     	if( typeCount[ MACHINE ][ FIVE ] ) {
     		//bestValue.value = 9999;
@@ -563,8 +468,7 @@ var Evaluation = function() {
     	}
 
     	if( typeCount[ PERSON ][ FIVE ] ) {
-    		//bestValue.value = -9999;
-    		//return bestValue;
+
     		return -9999;
     	}
 
@@ -575,39 +479,33 @@ var Evaluation = function() {
         	//alert(1)
         	//机器走
         	if( typeCount[ MACHINE ][ FOUR ] ) {
-        		//bestValue.value = 9990;
-        		//return bestValue;
+
         		return 9990;
         	}
 
         	if( typeCount[ MACHINE ][ SFOUR ] ) {
-        		//bestValue.value = 9980;
-        		//return bestValue;
+
         		return 9980;
         	}
 
         	if( typeCount[ PERSON ][ FOUR ] ) {
-        		//bestValue.value = -9970;
-        		//return bestValue;
+
         		return -9970;
         	}
 
         	if( typeCount[ PERSON ][ SFOUR ] && typeCount[ PERSON ][ THREE ] ) {
-        		//bestValue.value = -9960;
-        		//return bestValue;
+
         		return -9960;
         	}
 
         	if( typeCount[ MACHINE ][ THREE ] && typeCount[ PERSON ][ SFOUR ] == 0 ) {
-        		//bestValue.value = 9950;
-        		//return bestValue;
+
         		return 9950;
         	}
 
         	if( typeCount[ PERSON ][ THREE ] > 1 && typeCount[ MACHINE ][ SFOUR ] == 0 
         		&& typeCount[ MACHINE ][ THREE ] == 0 && typeCount[ MACHINE ][ STHREE ] == 0 ) {
-        			//bestValue = -9940;
-        			//return bestValue;
+
         			return -9940;
         	}
 
@@ -649,39 +547,33 @@ var Evaluation = function() {
         } else {
         	//alert(2)
         	if( typeCount[ PERSON ][ FOUR ] ) {
-        		//bestValue.value = -9990;
-        		//return bestValue;
+
         		return -9990;
         	}
 
         	if( typeCount[ PERSON ][ SFOUR ] ) {
-        		//bestValue.value = -9980;
-        		//return bestValue;
+
         		return -9980;
         	}
 
         	if( typeCount[ MACHINE ][ FOUR ] ) {
-        		//bestValue.value = 9970;
-        		//return bestValue;
+
         		return 9970;
         	}
 
         	if( typeCount[ MACHINE ][ SFOUR ] && typeCount[ MACHINE ][ THREE ] ) {
-        		//bestValue.value = 9960;
-        		//return bestValue;
+
         		return 9960;
         	}
 
         	if( typeCount[ PERSON ][ THREE ] && typeCount[ MACHINE ][ SFOUR ] == 0 ) {
-        		//bestValue.value = -9950;
-        		//return bestValue;
+
         		return -9950;
         	}
 
         	if( typeCount[ MACHINE ][ THREE ] > 1 && typeCount[ PERSON ][ SFOUR ] == 0 
         		&& typeCount[ PERSON ][ THREE ] == 0 && typeCount[ PERSON ][ STHREE ] == 0 ) {
-        			//bestValue = 9940;
-        			//return bestValue;
+
         			return 9940;
         	}
 
@@ -735,12 +627,6 @@ var Evaluation = function() {
         	};
         };
 
-        //console.log( machineValue + ':' + personValue );
-        //var value  = {};
-        //value.value = machineValue - personValue;
-        //value.debug = machineValue + '-' + personValue;
-        //value.typeCount = typeCount;
-        //return value;
         return machineValue - personValue;
 	}
 
@@ -757,8 +643,7 @@ var Evaluation = function() {
 		edges = getEdgeRange( array1, j, 'a' );
 		leftEdge = edges.leftEdge;
 		rightEdge = edges.rightEdge;
-		//alert( leftEdge);
-		//alert( rightEdge)
+
 		if( rightEdge - leftEdge > 3 ) {
 			for (var s = leftEdge; s <= rightEdge; s++) {
 				results.push( {
@@ -769,7 +654,7 @@ var Evaluation = function() {
 		}
 
 		var array2 = getTopToBottom( board, i, j ).array;
-		//alert( array2 )
+
 		edges = getEdgeRange( array2, i );
 		leftEdge = edges.leftEdge;
 		rightEdge = edges.rightEdge;
@@ -784,7 +669,6 @@ var Evaluation = function() {
 
 		result = getLTToRB( board, i, j );
 		array3 = result.array;
-				//alert( array3 )
 		x = result.x;
 		y = result.y;
 		edges = getEdgeRange( array3, j - x );
@@ -792,7 +676,7 @@ var Evaluation = function() {
 		rightEdge = edges.rightEdge;
 		if( rightEdge - leftEdge > 3 ) {
 			for (var s = leftEdge; s <= rightEdge; s++) {
-				//typeRecord[ y + s ][ x + s ][ 2 ] = lineRecord[ s ];
+
 				results.push( {
 					x: y + s,
 					y: x + s
@@ -809,7 +693,7 @@ var Evaluation = function() {
 		rightEdge = edges.rightEdge;
 		if( rightEdge - leftEdge > 3 ) {
 			for (var s = leftEdge; s <= rightEdge; s++) {
-				//typeRecord[ y - k ][ x + k ][ 3 ] = lineRecord[ k ];
+
 				results.push( {
 					x: y - s,
 					y: x + s
