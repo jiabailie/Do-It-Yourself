@@ -55,8 +55,6 @@ var MoveCreator = function() {
 	initialize();
 }
 
-
-
 var SearchEngin = function( mCreator, eval, depth ) {
 	var moveCreator = mCreator;
 	var evaluation = eval;
@@ -86,7 +84,6 @@ var SearchEngin = function( mCreator, eval, depth ) {
 		result.bestPoint = bestMove.chessPoint;
 		return result;
 	}
-
 
 	var alphaBeta = function( alphi, beta, depth ) {
 		if( depth <= 0 ) {
