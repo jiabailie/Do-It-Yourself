@@ -81,74 +81,16 @@ var SearchEngin = function( mCreator, eval, depth ) {
 		//var value = maxMin( maxDepth );
 		var value = alphaBeta( -10000, 10000, maxDepth );		
 
-		//console.log( value.value );
-		//console.log( value.debug );
-		//console.log( value.typeCount );
-
-		//console.log( testValue );
-
 		var result = new Object();
 		result.score = value;
 		result.bestPoint = bestMove.chessPoint;
 		return result;
-
-		//makeMove( bestMove, side );
-		//return curBoard;
 	}
-
-	/*var maxMin = function( depth ) {
-		if( depth > 0 ) {
-			//当前局面是否是胜负已分状态
-			var s = isGameOver( curBoard, depth );
-			if( s ) {
-				//alert( s )
-				return;
-			}
-		}
- 
-		if( depth <= 0 ) {
-			var value = evaluation.eval( curBoard, maxDepth % 2 );
-			return value;
-		}
-
-		if( ( maxDepth - depth + 1 ) % 2 == 1 ) {
-			var current = { value: -99999 };
-			var moveList = moveCreator.create( curBoard, depth );
-			for( var i = 0; i < moveList.length; i++ ) {
-				makeMove( moveList[ i ], ( maxDepth - depth + 1 ) % 2 );
-				var score = maxMin( depth - 1 );
-				unMakeMove( moveList[ i ] );			
-			    if( score.value > current.value ) {
-					current = score;
-					if( maxDepth == depth ) {
-						bestMove = moveList[ i ];
-					}
-				}						
-			}
-			return current;
-		} else {
-			var current = { value: 99999 };
-			var moveList = moveCreator.create( curBoard, depth );
-			for( var i = 0; i < moveList.length; i++ ) {
-				makeMove( moveList[ i ], ( maxDepth - depth + 1 ) % 2 );
-				var score = maxMin( depth - 1 );
-				unMakeMove( moveList[ i ] );			
-			    if( score.value < current.value ) {
-					current = score;
-					if( maxDepth == depth ) {
-						bestMove = moveList[ i ];
-					}
-				}						
-			}
-			return current;			
-		}
-	}	*/
 
 
 	var alphaBeta = function( alphi, beta, depth ) {
 		if( depth <= 0 ) {
 			var value = evaluation.eval( curBoard, ( maxDepth + 1 ) % 2 );
-			//console.log( value )
 			return value;
 		}
 
@@ -335,10 +277,6 @@ var HistoryTable = function () {
 		    testValue = 0;
 			board[ i ][ j ] = PERSON;
 			render();
-
-			//var result = evaluation.eval( board, PERSON );
-			//console.log( result.typeCount[0] );
-			//debug( result.typeCount[ 0 ] );
 			
 			var score = evaluation.eval( board, PERSON );
 
@@ -357,7 +295,6 @@ var HistoryTable = function () {
 			render(); 		
 
 			setPrev( point.x, point.y, MACHINE );	
-			//setPrev( i, j, PERSON );
 
 			score = evaluation.eval( board, MACHINE );
 			if( score == 9999 ) {
@@ -365,8 +302,6 @@ var HistoryTable = function () {
 				winRender( mPoints, MACHINE );
 				alert( '电脑胜了' );
 			}
-
-			//console.log( testValue ); 
 		}
 		
 		var winRender = function( points, side ) {
