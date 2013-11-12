@@ -12,6 +12,17 @@ using System.Data.Common;
 namespace PHConsultant.Common
 {
     /// <summary>
+    /// 配置参数类
+    /// </summary>
+    public class BaseConfig
+    {
+        /// <summary>
+        /// 数据库连接字符串
+        /// </summary>
+        public static string ConnectionString { get; set; }
+    }
+
+    /// <summary>
     /// 数据访问工具集
     /// </summary>
     public sealed class DBHelper
@@ -356,58 +367,6 @@ namespace PHConsultant.Common
             return retval;
         }
 
-
-        /*
-        /// <summary>
-        /// Execute a SqlCommand (that returns no resultset) against the specified SqlConnection 
-        /// using the provided parameters.
-        /// </summary>
-        /// <remarks>
-        /// e.g.:  
-        ///  int result = ExecuteNonQuery(conn, CommandType.StoredProcedure, "PublishOrders", new SqlParameter("@prodid", 24));
-        /// </remarks>
-        /// <param name="connection">A valid SqlConnection</param>
-        /// <param name="commandType">The CommandType (stored procedure, text, etc.)</param>
-        /// <param name="commandText">The stored procedure name or T-SQL command</param>
-        /// <param name="commandParameters">An array of SqlParamters used to execute the command</param>
-        /// <returns>An int representing the number of rows affected by the command</returns>
-        public static int ExecuteNonQuery_Trans(string connectionstr, CommandType commandType, string commandText, params SqlParameter[] commandParameters)
-        {  
-            SqlConnection connection = new SqlConnection(connectionstr);
-			
-            if( connection == null ) throw new ArgumentNullException( "connection" );
-
-            // Create a command and prepare it for execution
-            SqlCommand cmd = new SqlCommand();
-            bool mustCloseConnection = false;
-		
-            SqlTransaction transaction=connection.BeginTransaction();
-            PrepareCommand(cmd, connection, transaction, commandType, commandText, commandParameters, out mustCloseConnection );
-            int retval;
-            try
-            {
-                // Finally, execute the command
-                retval= cmd.ExecuteNonQuery();
-                // Detach the SqlParameters from the command object, so they can be used again
-                cmd.Parameters.Clear();
-                if( mustCloseConnection )
-                    connection.Close();
-                transaction.Commit;
-				
-            }
-            catch
-            {
-                transaction.Rollback();
-                throw;
-            }
-            finally
-            {
-                transaction.Dispose();
-            }  
-            return retval;
-        }
-
-        */
         /// <summary>
         /// Execute a stored procedure via a SqlCommand (that returns no resultset) against the specified SqlConnection 
         /// using the provided parameter values.  This method will query the database to discover the parameters for the 
@@ -496,53 +455,51 @@ namespace PHConsultant.Common
         }
 
 
-        /*
-		/// <summary>
-		/// Execute a SqlCommand (that returns no resultset) against the specified SqlTransaction
-		/// using the provided parameters.
-		/// </summary>
-		/// <remarks>
-		/// e.g.:  
-		///  int result = ExecuteNonQuery(trans, CommandType.StoredProcedure, "GetOrders", new SqlParameter("@prodid", 24));
-		/// </remarks>
-		/// <param name="transaction">A valid SqlTransaction</param>
-		/// <param name="commandType">The CommandType (stored procedure, text, etc.)</param>
-		/// <param name="commandText">The stored procedure name or T-SQL command</param>
-		/// <param name="commandParameters">An array of SqlParamters used to execute the command</param>
-		/// <returns>An int representing the number of rows affected by the command</returns>
-		public static int ExecuteNonQuery_Trans(SqlTransaction transaction, CommandType commandType, string commandText, params SqlParameter[] commandParameters)
-		{
-		
-			if( transaction == null ) throw new ArgumentNullException( "transaction" );
-			if( transaction != null && transaction.Connection == null ) throw new ArgumentException( "The transaction was rollbacked or commited, please provide an open transaction.", "transaction" );
+        /// <summary>
+        /// Execute a SqlCommand (that returns no resultset) against the specified SqlTransaction
+        /// using the provided parameters.
+        /// </summary>
+        /// <remarks>
+        /// e.g.:  
+        ///  int result = ExecuteNonQuery(trans, CommandType.StoredProcedure, "GetOrders", new SqlParameter("@prodid", 24));
+        /// </remarks>
+        /// <param name="transaction">A valid SqlTransaction</param>
+        /// <param name="commandType">The CommandType (stored procedure, text, etc.)</param>
+        /// <param name="commandText">The stored procedure name or T-SQL command</param>
+        /// <param name="commandParameters">An array of SqlParamters used to execute the command</param>
+        /// <returns>An int representing the number of rows affected by the command</returns>
+        public static int ExecuteNonQuery_Trans(SqlTransaction transaction, CommandType commandType, string commandText, params SqlParameter[] commandParameters)
+        {
 
-			// Create a command and prepare it for execution
-			SqlCommand cmd = new SqlCommand();
-			bool mustCloseConnection = false;
-			PrepareCommand(cmd, transaction.Connection, transaction, commandType, commandText, commandParameters, out mustCloseConnection );
-    	
-			int retval ;
-			try
-			{
-				// Finally, execute the command
-				retval = cmd.ExecuteNonQuery();
-				// Detach the SqlParameters from the command object, so they can be used again
-				cmd.Parameters.Clear();
-				transaction.Commit();
-				
-			}
-			catch
-			{
-				transaction.Rollback();
-				throw;
-			}
-			finally
-			{
-				transaction.Dispose();
-			}  
-			return retval;
-		}
-        */
+            if (transaction == null) throw new ArgumentNullException("transaction");
+            if (transaction != null && transaction.Connection == null) throw new ArgumentException("The transaction was rollbacked or commited, please provide an open transaction.", "transaction");
+
+            // Create a command and prepare it for execution
+            SqlCommand cmd = new SqlCommand();
+            bool mustCloseConnection = false;
+            PrepareCommand(cmd, transaction.Connection, transaction, commandType, commandText, commandParameters, out mustCloseConnection);
+
+            int retval;
+            try
+            {
+                // Finally, execute the command
+                retval = cmd.ExecuteNonQuery();
+                // Detach the SqlParameters from the command object, so they can be used again
+                cmd.Parameters.Clear();
+                transaction.Commit();
+
+            }
+            catch
+            {
+                transaction.Rollback();
+                throw;
+            }
+            finally
+            {
+                transaction.Dispose();
+            }
+            return retval;
+        }
 
 
         /// <summary>
@@ -772,7 +729,6 @@ namespace PHConsultant.Common
             }
         }
 
-        /*
         /// <summary>
         /// Execute a SqlCommand (that returns a resultset) against the specified SqlConnection 
         /// using the provided parameters.
@@ -788,24 +744,22 @@ namespace PHConsultant.Common
         /// <returns>A dataset containing the resultset generated by the command</returns>
         public static DataSet ExecuteDataset_Trans(string connectionstr, CommandType commandType, string commandText, params SqlParameter[] commandParameters)
         {
-
             SqlConnection connection = new SqlConnection(connectionstr);
-		
-            if( connection == null ) throw new ArgumentNullException( "connection" );
+
+            if (connection == null) throw new ArgumentNullException("connection");
 
             // Create a command and prepare it for execution
             SqlCommand cmd = new SqlCommand();
             bool mustCloseConnection = false;
 
-            SqlTransaction transaction= connection.BeginTransaction();
-          
-            PrepareCommand(cmd, connection, transaction, commandType, commandText, commandParameters, out mustCloseConnection );
-    				 
+            SqlTransaction transaction = connection.BeginTransaction();
+
+            PrepareCommand(cmd, connection, transaction, commandType, commandText, commandParameters, out mustCloseConnection);
+
             DataSet ds = new DataSet();
             // Create the DataAdapter & DataSet
-            using( SqlDataAdapter da = new SqlDataAdapter(cmd))
+            using (SqlDataAdapter da = new SqlDataAdapter(cmd))
             {
-				
                 try
                 {
                     // Fill the DataSet using default values for DataTable names, etc
@@ -814,7 +768,7 @@ namespace PHConsultant.Common
                     // Detach the SqlParameters from the command object, so they can be used again
                     cmd.Parameters.Clear();
 
-                    if( mustCloseConnection )
+                    if (mustCloseConnection)
                         connection.Close();
                     // Return the dataset
                     return ds;
@@ -828,11 +782,9 @@ namespace PHConsultant.Common
                 finally
                 {
                     transaction.Dispose();
-                }  
+                }
             }
-            return ds;
         }
-        */
 
         /// <summary>
         /// Execute a stored procedure via a SqlCommand (that returns a resultset) against the specified SqlConnection 
@@ -930,7 +882,6 @@ namespace PHConsultant.Common
         }
 
 
-        /*
         /// <summary>
         /// Execute a SqlCommand (that returns a resultset) against the specified SqlTransaction
         /// using the provided parameters.
@@ -946,19 +897,19 @@ namespace PHConsultant.Common
         /// <returns>A dataset containing the resultset generated by the command</returns>
         public static DataSet ExecuteDataset_Trans(SqlTransaction transaction, CommandType commandType, string commandText, params SqlParameter[] commandParameters)
         {
-            if( transaction == null ) throw new ArgumentNullException( "transaction" );
-            if( transaction != null && transaction.Connection == null ) throw new ArgumentException( "The transaction was rollbacked or commited, please provide an open transaction.", "transaction" );
+            if (transaction == null) throw new ArgumentNullException("transaction");
+            if (transaction != null && transaction.Connection == null) throw new ArgumentException("The transaction was rollbacked or commited, please provide an open transaction.", "transaction");
 
             // Create a command and prepare it for execution
             SqlCommand cmd = new SqlCommand();
             bool mustCloseConnection = false;
-            PrepareCommand(cmd, transaction.Connection, transaction, commandType, commandText, commandParameters, out mustCloseConnection );
-    		
+            PrepareCommand(cmd, transaction.Connection, transaction, commandType, commandText, commandParameters, out mustCloseConnection);
+
             DataSet ds = new DataSet();
             // Create the DataAdapter & DataSet
-            using( SqlDataAdapter da = new SqlDataAdapter(cmd))
+            using (SqlDataAdapter da = new SqlDataAdapter(cmd))
             {
-				
+
                 try
                 {
                     // Fill the DataSet using default values for DataTable names, etc
@@ -967,7 +918,7 @@ namespace PHConsultant.Common
                     // Detach the SqlParameters from the command object, so they can be used again
                     cmd.Parameters.Clear();
 
-                    if( mustCloseConnection )
+                    if (mustCloseConnection)
                         transaction.Connection.Close();
                     // Return the dataset
                     return ds;
@@ -981,11 +932,9 @@ namespace PHConsultant.Common
                 finally
                 {
                     transaction.Dispose();
-                }  
+                }
             }
-            return ds;
         }
-        */
 
         /// <summary>
         /// Execute a stored procedure via a SqlCommand (that returns a resultset) against the specified 
@@ -1070,14 +1019,6 @@ namespace PHConsultant.Common
             return ExecuteReader(ConnectionString, commandType, commandText, commandParameters);
 
         }
-
-
-
-
-
-
-
-
 
         /// <summary>
         /// This enum is used to indicate whether the connection was provided by the caller, or created by Database, so that
@@ -1397,8 +1338,6 @@ namespace PHConsultant.Common
 
         #region ExecuteScalar
 
-
-
         /// <summary>
         /// Execute a SqlCommand (that returns a 1x1 resultset and takes no parameters) against the database specified in 
         /// the connection string. 
@@ -1435,10 +1374,6 @@ namespace PHConsultant.Common
             return ExecuteScalar(ConnectionString, commandType, commandText, commandParameters);
         }
 
-
-
-
-
         /// <summary>
         /// 执行ExecuteScalar,将结果以字符串类型输出,不带connectionstring。
         /// </summary>
@@ -1473,15 +1408,6 @@ namespace PHConsultant.Common
             }
             return ec.ToString();
         }
-
-
-
-
-
-
-
-
-
 
         /// <summary>
         /// Execute a SqlCommand (that returns a 1x1 resultset and takes no parameters) against the database specified in 
@@ -1565,9 +1491,6 @@ namespace PHConsultant.Common
                 return ExecuteScalar(connectionString, CommandType.StoredProcedure, spName);
             }
         }
-
-
-
 
         /// <summary>
         /// 执行ExecuteScalar,将结果以字符串类型输出。
@@ -2612,7 +2535,6 @@ namespace PHConsultant.Common
             }
         }
 
-
         /// <summary>
         /// Execute a stored procedure via a SqlCommand (that returns a resultset) against the specified SqlConnection 
         /// using the dataRow column values as the stored procedure's parameters values.
@@ -3006,13 +2928,12 @@ namespace PHConsultant.Common
             return param;
         }
         #endregion
-
     }
 
     /// <summary>
     /// 数据访问层,提供处理Sql Server 2000数据库的各种方法
     /// </summary>
-    partial  class DataBaseAccess
+    partial class DataBaseAccess
     {
         #region private utility methods & constructors
 
@@ -3206,8 +3127,6 @@ namespace PHConsultant.Common
             return ExecuteNonQuery(ConnectionString, commandType, commandText, (SqlParameter[])null);
         }
 
-
-
         /// <summary>
         /// 执行一个有参数的,只返回影响行数的SQL或存储过程(ExecuteNonQuery 最外层)。
         /// </summary>
@@ -3219,7 +3138,6 @@ namespace PHConsultant.Common
         {
             return ExecuteNonQuery(ConnectionString, commandType, commandText, commandParameters);
         }
-
 
         /// <summary>
         /// Execute a SqlCommand (that returns no resultset and takes no parameters) against the database specified in 
@@ -3354,58 +3272,6 @@ namespace PHConsultant.Common
             return retval;
         }
 
-
-        /*
-        /// <summary>
-        /// Execute a SqlCommand (that returns no resultset) against the specified SqlConnection 
-        /// using the provided parameters.
-        /// </summary>
-        /// <remarks>
-        /// e.g.:  
-        ///  int result = ExecuteNonQuery(conn, CommandType.StoredProcedure, "PublishOrders", new SqlParameter("@prodid", 24));
-        /// </remarks>
-        /// <param name="connection">A valid SqlConnection</param>
-        /// <param name="commandType">The CommandType (stored procedure, text, etc.)</param>
-        /// <param name="commandText">The stored procedure name or T-SQL command</param>
-        /// <param name="commandParameters">An array of SqlParamters used to execute the command</param>
-        /// <returns>An int representing the number of rows affected by the command</returns>
-        public static int ExecuteNonQuery_Trans(string connectionstr, CommandType commandType, string commandText, params SqlParameter[] commandParameters)
-        {	
-            SqlConnection connection = new SqlConnection(connectionstr);
-			
-            if( connection == null ) throw new ArgumentNullException( "connection" );
-
-            // Create a command and prepare it for execution
-            SqlCommand cmd = new SqlCommand();
-            bool mustCloseConnection = false;
-		
-            SqlTransaction transaction=connection.BeginTransaction();
-            PrepareCommand(cmd, connection, transaction, commandType, commandText, commandParameters, out mustCloseConnection );
-            int retval;
-            try
-            {
-                // Finally, execute the command
-                retval= cmd.ExecuteNonQuery();
-                // Detach the SqlParameters from the command object, so they can be used again
-                cmd.Parameters.Clear();
-                if( mustCloseConnection )
-                    connection.Close();
-                transaction.Commit;
-				
-            }
-            catch
-            {
-                transaction.Rollback();
-                throw;
-            }
-            finally
-            {
-                transaction.Dispose();
-            }  
-            return retval;
-        }
-
-        */
         /// <summary>
         /// Execute a stored procedure via a SqlCommand (that returns no resultset) against the specified SqlConnection 
         /// using the provided parameter values.  This method will query the database to discover the parameters for the 
@@ -3493,55 +3359,51 @@ namespace PHConsultant.Common
             return retval;
         }
 
+        /// <summary>
+        /// Execute a SqlCommand (that returns no resultset) against the specified SqlTransaction
+        /// using the provided parameters.
+        /// </summary>
+        /// <remarks>
+        /// e.g.:  
+        ///  int result = ExecuteNonQuery(trans, CommandType.StoredProcedure, "GetOrders", new SqlParameter("@prodid", 24));
+        /// </remarks>
+        /// <param name="transaction">A valid SqlTransaction</param>
+        /// <param name="commandType">The CommandType (stored procedure, text, etc.)</param>
+        /// <param name="commandText">The stored procedure name or T-SQL command</param>
+        /// <param name="commandParameters">An array of SqlParamters used to execute the command</param>
+        /// <returns>An int representing the number of rows affected by the command</returns>
+        public static int ExecuteNonQuery_Trans(SqlTransaction transaction, CommandType commandType, string commandText, params SqlParameter[] commandParameters)
+        {
 
-        /*
-		/// <summary>
-		/// Execute a SqlCommand (that returns no resultset) against the specified SqlTransaction
-		/// using the provided parameters.
-		/// </summary>
-		/// <remarks>
-		/// e.g.:  
-		///  int result = ExecuteNonQuery(trans, CommandType.StoredProcedure, "GetOrders", new SqlParameter("@prodid", 24));
-		/// </remarks>
-		/// <param name="transaction">A valid SqlTransaction</param>
-		/// <param name="commandType">The CommandType (stored procedure, text, etc.)</param>
-		/// <param name="commandText">The stored procedure name or T-SQL command</param>
-		/// <param name="commandParameters">An array of SqlParamters used to execute the command</param>
-		/// <returns>An int representing the number of rows affected by the command</returns>
-		public static int ExecuteNonQuery_Trans(SqlTransaction transaction, CommandType commandType, string commandText, params SqlParameter[] commandParameters)
-		{
-		
-			if( transaction == null ) throw new ArgumentNullException( "transaction" );
-			if( transaction != null && transaction.Connection == null ) throw new ArgumentException( "The transaction was rollbacked or commited, please provide an open transaction.", "transaction" );
+            if (transaction == null) throw new ArgumentNullException("transaction");
+            if (transaction != null && transaction.Connection == null) throw new ArgumentException("The transaction was rollbacked or commited, please provide an open transaction.", "transaction");
 
-			// Create a command and prepare it for execution
-			SqlCommand cmd = new SqlCommand();
-			bool mustCloseConnection = false;
-			PrepareCommand(cmd, transaction.Connection, transaction, commandType, commandText, commandParameters, out mustCloseConnection );
-    	
-			int retval ;
-			try
-			{
-				// Finally, execute the command
-				retval = cmd.ExecuteNonQuery();
-				// Detach the SqlParameters from the command object, so they can be used again
-				cmd.Parameters.Clear();
-				transaction.Commit();
-				
-			}
-			catch
-			{
-				transaction.Rollback();
-				throw;
-			}
-			finally
-			{
-				transaction.Dispose();
-			}  
-			return retval;
-		}
-        */
+            // Create a command and prepare it for execution
+            SqlCommand cmd = new SqlCommand();
+            bool mustCloseConnection = false;
+            PrepareCommand(cmd, transaction.Connection, transaction, commandType, commandText, commandParameters, out mustCloseConnection);
 
+            int retval;
+            try
+            {
+                // Finally, execute the command
+                retval = cmd.ExecuteNonQuery();
+                // Detach the SqlParameters from the command object, so they can be used again
+                cmd.Parameters.Clear();
+                transaction.Commit();
+
+            }
+            catch
+            {
+                transaction.Rollback();
+                throw;
+            }
+            finally
+            {
+                transaction.Dispose();
+            }
+            return retval;
+        }
 
         /// <summary>
         /// Execute a stored procedure via a SqlCommand (that returns no resultset) against the specified 
@@ -3607,7 +3469,6 @@ namespace PHConsultant.Common
             return ExecuteDataset(ConnectionString, commandType, commandText, (SqlParameter[])null);
         }
 
-
         /// <summary>
         /// Execute a SqlCommand (that returns a resultset) against the database specified in the connection string 
         /// using the provided parameters.
@@ -3626,7 +3487,6 @@ namespace PHConsultant.Common
         {
             return ExecuteDataset(ConnectionString, commandType, commandText, commandParameters);
         }
-
 
         /// <summary>
         /// Execute a SqlCommand (that returns a resultset and takes no parameters) against the database specified in 
@@ -3770,7 +3630,6 @@ namespace PHConsultant.Common
             }
         }
 
-        /*
         /// <summary>
         /// Execute a SqlCommand (that returns a resultset) against the specified SqlConnection 
         /// using the provided parameters.
@@ -3788,22 +3647,22 @@ namespace PHConsultant.Common
         {
 
             SqlConnection connection = new SqlConnection(connectionstr);
-		
-            if( connection == null ) throw new ArgumentNullException( "connection" );
+
+            if (connection == null) throw new ArgumentNullException("connection");
 
             // Create a command and prepare it for execution
             SqlCommand cmd = new SqlCommand();
             bool mustCloseConnection = false;
 
-            SqlTransaction transaction= connection.BeginTransaction();
-          
-            PrepareCommand(cmd, connection, transaction, commandType, commandText, commandParameters, out mustCloseConnection );
-    				 
+            SqlTransaction transaction = connection.BeginTransaction();
+
+            PrepareCommand(cmd, connection, transaction, commandType, commandText, commandParameters, out mustCloseConnection);
+
             DataSet ds = new DataSet();
             // Create the DataAdapter & DataSet
-            using( SqlDataAdapter da = new SqlDataAdapter(cmd))
+            using (SqlDataAdapter da = new SqlDataAdapter(cmd))
             {
-				
+
                 try
                 {
                     // Fill the DataSet using default values for DataTable names, etc
@@ -3812,7 +3671,7 @@ namespace PHConsultant.Common
                     // Detach the SqlParameters from the command object, so they can be used again
                     cmd.Parameters.Clear();
 
-                    if( mustCloseConnection )
+                    if (mustCloseConnection)
                         connection.Close();
                     // Return the dataset
                     return ds;
@@ -3826,11 +3685,9 @@ namespace PHConsultant.Common
                 finally
                 {
                     transaction.Dispose();
-                }  
+                }
             }
-            return ds;
         }
-        */
 
         /// <summary>
         /// Execute a stored procedure via a SqlCommand (that returns a resultset) against the specified SqlConnection 
@@ -3927,8 +3784,6 @@ namespace PHConsultant.Common
             }
         }
 
-
-        /*
         /// <summary>
         /// Execute a SqlCommand (that returns a resultset) against the specified SqlTransaction
         /// using the provided parameters.
@@ -3944,19 +3799,19 @@ namespace PHConsultant.Common
         /// <returns>A dataset containing the resultset generated by the command</returns>
         public static DataSet ExecuteDataset_Trans(SqlTransaction transaction, CommandType commandType, string commandText, params SqlParameter[] commandParameters)
         {
-            if( transaction == null ) throw new ArgumentNullException( "transaction" );
-            if( transaction != null && transaction.Connection == null ) throw new ArgumentException( "The transaction was rollbacked or commited, please provide an open transaction.", "transaction" );
+            if (transaction == null) throw new ArgumentNullException("transaction");
+            if (transaction != null && transaction.Connection == null) throw new ArgumentException("The transaction was rollbacked or commited, please provide an open transaction.", "transaction");
 
             // Create a command and prepare it for execution
             SqlCommand cmd = new SqlCommand();
             bool mustCloseConnection = false;
-            PrepareCommand(cmd, transaction.Connection, transaction, commandType, commandText, commandParameters, out mustCloseConnection );
-    		
+            PrepareCommand(cmd, transaction.Connection, transaction, commandType, commandText, commandParameters, out mustCloseConnection);
+
             DataSet ds = new DataSet();
             // Create the DataAdapter & DataSet
-            using( SqlDataAdapter da = new SqlDataAdapter(cmd))
+            using (SqlDataAdapter da = new SqlDataAdapter(cmd))
             {
-				
+
                 try
                 {
                     // Fill the DataSet using default values for DataTable names, etc
@@ -3965,7 +3820,7 @@ namespace PHConsultant.Common
                     // Detach the SqlParameters from the command object, so they can be used again
                     cmd.Parameters.Clear();
 
-                    if( mustCloseConnection )
+                    if (mustCloseConnection)
                         transaction.Connection.Close();
                     // Return the dataset
                     return ds;
@@ -3979,11 +3834,9 @@ namespace PHConsultant.Common
                 finally
                 {
                     transaction.Dispose();
-                }  
+                }
             }
-            return ds;
         }
-        */
 
         /// <summary>
         /// Execute a stored procedure via a SqlCommand (that returns a resultset) against the specified 
@@ -4068,14 +3921,6 @@ namespace PHConsultant.Common
             return ExecuteReader(ConnectionString, commandType, commandText, commandParameters);
 
         }
-
-
-
-
-
-
-
-
 
         /// <summary>
         /// This enum is used to indicate whether the connection was provided by the caller, or created by Database, so that
@@ -4395,8 +4240,6 @@ namespace PHConsultant.Common
 
         #region ExecuteScalar
 
-
-
         /// <summary>
         /// Execute a SqlCommand (that returns a 1x1 resultset and takes no parameters) against the database specified in 
         /// the connection string. 
@@ -4433,10 +4276,6 @@ namespace PHConsultant.Common
             return ExecuteScalar(ConnectionString, commandType, commandText, commandParameters);
         }
 
-
-
-
-
         /// <summary>
         /// 执行ExecuteScalar,将结果以字符串类型输出,不带connectionstring。
         /// </summary>
@@ -4471,15 +4310,6 @@ namespace PHConsultant.Common
             }
             return ec.ToString();
         }
-
-
-
-
-
-
-
-
-
 
         /// <summary>
         /// Execute a SqlCommand (that returns a 1x1 resultset and takes no parameters) against the database specified in 
@@ -4563,9 +4393,6 @@ namespace PHConsultant.Common
                 return ExecuteScalar(connectionString, CommandType.StoredProcedure, spName);
             }
         }
-
-
-
 
         /// <summary>
         /// 执行ExecuteScalar,将结果以字符串类型输出。
@@ -5610,7 +5437,6 @@ namespace PHConsultant.Common
             }
         }
 
-
         /// <summary>
         /// Execute a stored procedure via a SqlCommand (that returns a resultset) against the specified SqlConnection 
         /// using the dataRow column values as the stored procedure's parameters values.
@@ -6245,5 +6071,5 @@ namespace PHConsultant.Common
         }
 
         #endregion Parameter Discovery Functions
-    }   
+    }
 }
