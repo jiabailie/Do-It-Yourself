@@ -2,7 +2,6 @@ set ANSI_NULLS ON
 set QUOTED_IDENTIFIER ON
 go
 
-
 --------游戏结果提交 联机
 ALTER PROCEDURE [dbo].[SubmitScoreOnline] 
 	@WinnerID  int,
@@ -42,7 +41,7 @@ BEGIN
 	begin 
 		set @state = -6; 
 		return;  
-	end; ---玩家不存在
+	end ---玩家不存在
 
 	------联机胜率 每次输赢结果更新	winrate=(OnlineGameCount*winrate+/-1)/OnlineGameCount
 	update [User] set Userwinrate = (UserOnlineGCount * Userwinrate + 1) / UserOnlineGCount where UserID = @WinnerID;
@@ -61,7 +60,7 @@ BEGIN
 	begin 
 		set @state = -10;  
 		return;
-	end;
+	end
 
 	--看当前赛季状态,如果是季后赛:做分数有效性检查 
 
@@ -103,5 +102,5 @@ BEGIN
 	end
 	update [User] set UserOnlineGPoint = UserOnlineGPoint + @winnerIncrease where UserID = @WinnerID;
 	update [User] set UserOnlineGPoint = UserOnlineGPoint + @LoserDecrease where UserID = @LoserID;
-	set @state =1;
+	set @state = 1;
 END
