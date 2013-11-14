@@ -1,40 +1,38 @@
-// Utilities: a Javascript class for puworld.com
-// Utilities.js Copyright (c) 2009 Victor Zhu. ver: 1.01 P.H.Consultant
 // 本程序需要　jQuery.js类库的支持。　
 
-///--- 去空格
+// 字符串去空格
 String.prototype.Trim = function() {
     return this.replace(/(^\s*)|(\s*$)/g, "");
 }
 
-String.prototype.Occurs = function(ch) {
-    return this.split(ch).length - 1;
-}
-
+// 字符串是否全为数字
 String.prototype.isDigit = function() {
     var s = this.Trim();
     return (s.replace(/\d/g, "").length == 0);
 }
 
+// 字符串是否全为字母
 String.prototype.isAlpha = function() {
     return (this.replace(/\w/g, "").length == 0);
 }
 
+// 字符串是否含有数字
 String.prototype.isNumber = function() {
     var s = this.Trim();
     return (s.search(/^[+-]?[0-9.]*$/) >= 0);
 }
 
+// 如果字符串全为汉字(双字节)，求长度
 String.prototype.lenb = function() {
     return this.replace(/[^\x00-\xff]/g, "**").length;
 }
 
-///是否有中文　　
+// 字符串中是否有中文　　
 String.prototype.isInChinese = function() {
     return (this.length != this.replace(/[^\x00-\xff]/g, "**").length);
 }
 
-///邮箱格式验证　　
+// 验证邮箱格式
 String.prototype.isEmail = function() {
     var str = this;
 
@@ -47,6 +45,7 @@ String.prototype.isEmail = function() {
     }
 }
 
+// 验证用逗号隔开的字符串内是否含有指定值
 String.prototype.isInList = function(value) {
     var str = this.split(",");
 
@@ -56,21 +55,8 @@ String.prototype.isInList = function(value) {
     return false;
 }
 
-// 删除前提示
-// @elementName 复选框的名称，例如： "chk_employee"
-// @typeValue    需要删除的功能类别值，例如： "员工"
-function onDeleteCheck(elementName, typeValue) {
-    var _aryElements = document.getElementsByName(elementName);
-    var flag = false;
-    for (i = 0; i < _aryElements.length; i++) {
-        if (_aryElements[i].checked) { flag = true; break; }
-    }
-    if (!flag) { alert("删除前，请选择" + typeValue + "资料。"); return false; }
-    return confirm("您确认删除这些" + typeValue + "资料么？");
-}
-
-///全选
-function onSelectAll(obj,elementName) {
+// 将Checkbox List中控件名称为elementName的置为选中
+function onSelectAll(obj, elementName) {
     var aryCheck = document.getElementsByTagName("input");
     for (var i = 0; i < aryCheck.length; i++) {
         if (aryCheck[i].type == "checkbox" && aryCheck[i].name == elementName) {
@@ -79,32 +65,22 @@ function onSelectAll(obj,elementName) {
     }
 }
 
+// 将页面中Checkbox中控件名称为elementName的全部置为选中
 function onCheckedAll(elementName) {
     $("INPUT").each(function() { if ($(this).attr("name") == elementName && $(this).attr("type") == 'checkbox') { $(this).attr("checked", 'checked'); } });
 }
 
-///
-function onOperateCheck(elementName, typeValue, memo) {
-    var _aryElements = document.getElementsByName(elementName);
-    var flag = false;
-    for (i = 0; i < _aryElements.length; i++) {
-        if (_aryElements[i].checked) { flag = true; break; }
-    }
-    if (!flag) { alert(memo + "前，请选择" + typeValue + "资料。"); return false; }
-    return confirm("您确认" + memo + "这些" + typeValue + "资料么？");
-}
-
-///按元素名称选择元素对象
+// 按元素名称选择元素对象
 var $F = function(name) {
     return document.getElementsByName ? document.getElementsByName(name) : null;
 }
 
-///按元素标签名称选择元素对象
+// 按元素标签名称选择元素对象
 var $Tag = function(tagName) {
     return document.getElementsByTagName ? document.getElementsByTagName(tagName) : new Array();
 }
 
-//显示提示层代码
+// 显示提示层代码
 function showhintinfo(obj, objleftoffset, objtopoffset, title, info, objheight, showtype, objtopfirefoxoffset) {
 
     var p = getposition(obj);
@@ -138,13 +114,13 @@ function showhintinfo(obj, objleftoffset, objtopoffset, title, info, objheight, 
     document.getElementById('hintdiv' + showtype).style.left = (p['x'] + objleftoffset - 55) + "px";
 }
 
-//隐藏提示层代码
+// 隐藏提示层代码
 function hidehintinfo() {
     document.getElementById('hintdivup').style.display = 'none';
     document.getElementById('hintdivdown').style.display = 'none';
 }
 
-//得到字符串长度
+// 得到字符串长度
 function getLen(str) {
     var totallength = 0;
 
@@ -160,6 +136,7 @@ function getLen(str) {
     return totallength;
 }
 
+// 得到控件相对于屏幕左上角的距离
 function getposition(obj) {
     var r = new Array();
     r['x'] = obj.offsetLeft;
@@ -171,8 +148,8 @@ function getposition(obj) {
     return r;
 }
 
-///时间大小判断　
-///如果 date2 <= date1 返回 false;
+// 时间大小判断　
+// 如果 date2 <= date1 返回 false;
 function CompareDate(date1, date2) {
 
     var _aryFrom = date1.split("-");
@@ -189,7 +166,7 @@ function CompareDate(date1, date2) {
     }
 }
 
-//输入框的全选或否
+// 输入框的全选或否
 function selectChanged(obj, id) {
     var x = document.getElementsByName(id);
     for (var i = 0; i <= x.length - 1; i++) {
@@ -202,12 +179,13 @@ function selectChanged(obj, id) {
     }
 }
 
+// 判断字符串的字节长度是否在minlen和maxlen之间
 function checkByteLength(str, minlen, maxlen) {
     if (str == null) return false;
     var l = str.length;
     var blen = 0;
     for (i = 0; i < l; i++) {
-        if ((str.charCodeAt(i) & 0xff00) != 0) {
+        if ((str.charCodeAt(i) & 0xff00) != 0) { // 如果为汉字
             blen++;
         }
         blen++;
@@ -218,7 +196,7 @@ function checkByteLength(str, minlen, maxlen) {
     return true;
 }
 
-//选择卡切换
+// 选择卡切换
 function onTab(index) {
     $(".tablist").find("A").each(function() { $(this).removeClass(); });
     $("DIV[id^='content']").each(function() { $(this).hide(); });
@@ -226,30 +204,30 @@ function onTab(index) {
     $("#content" + index).show();
 }
 
-///设置单选选中操作
-/// elementName -- 当前radio的name。
-/// radioValue     -- 需要被选中项的值。
+// 设置单选选中操作
+// elementName -- 当前radio的name。
+// radioValue     -- 需要被选中项的值。
 function onRadioChecked(elementName, radioValue) {
     $("INPUT").each(function() { if ($(this).attr("type") == "radio" && $(this).attr("name") == elementName && $(this).val() == radioValue) { $(this).attr("checked", 'checked'); } });
 }
 
-///设置下柆框选中操作
-/// elementName -- 当前radio的name。
-/// radioValue     -- 需要被选中项的值。
+// 设置下柆框选中操作
+// elementName -- 当前radio的name。
+// radioValue     -- 需要被选中项的值。
 function onSelectSelected(elementId, selectValue) {
     $("#" + elementId).attr("value", selectValue); 
 }
 
-///设置单复选选框选中操作
-/// elementName -- 当前radio的name。
-/// radioValue     -- 需要被选中项的值。
+// 设置单复选选框选中操作
+// elementName -- 当前radio的name。
+// radioValue     -- 需要被选中项的值。
 function onCheckBoxChecked(elementId, checkValue) {
     if ($("#" + elementId).attr("type") == "checkbox" && $("#" + elementId).val() == checkValue) $("#" + elementId).attr("checked", 'checked');
 }
 
-///设置多复选选框选中操作
-/// elementName -- 当前radio的name。
-/// radioValue     -- 需要被选中项的值。
+// 设置多复选选框选中操作
+// elementName -- 当前radio的name。
+// radioValue     -- 需要被选中项的值。
 function onCheckBoxListChecked(elementName, aryValue) {
     var chk_layout = document.getElementsByName(elementName);
     var aryLayout = aryValue.split(',');
@@ -262,9 +240,9 @@ function onCheckBoxListChecked(elementName, aryValue) {
     }
 }
 
-///显示obj里已经输入了多少文字
-///elementID为显示区域ID
-///maxLength为最大可输入字符数
+// 显示obj里已经输入了多少文字
+// elementID为显示区域ID
+// maxLength为最大可输入字符数
 function CheckNum(obj, elementID, maxLength) {
     document.getElementById(elementID).innerHTML = "当前输入" + obj.value.length + " / " + maxLength + " 个字符";
 }
@@ -285,6 +263,7 @@ function GetRequestValue(url, requestKey) {
     return "";
 }
 
+// 取页面中RadioButton List中选中的Button值
 function GetRadioButtonValue(element, defaultValue) {
     var ary = document.getElementsByName(element);
     for (var i = 0; i <= ary.length - 1; i++) {
@@ -296,9 +275,9 @@ function GetRadioButtonValue(element, defaultValue) {
     return defaultValue;
 }
 
-//设置多选框的值
-//element为多选框的name值
-//value为多选框的选中值，用逗号分隔
+// 设置多选框的值
+// element为多选框的name值
+// value为多选框的选中值，用逗号分隔
 function setCheckBoxChecked(element, value) {
     if (value != null && value.Trim() != "") {
         var ss = value.split(',');

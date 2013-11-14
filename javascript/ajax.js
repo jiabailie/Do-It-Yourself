@@ -1,4 +1,8 @@
-function Ajax(file, fun) {
+/*
+ * 调用示例: Ajax("/set/a.aspx?a=1&b=2", "Function(obj,...)");
+ * 表示调用/set/a.aspx页面中的Function函数
+ */
+function Ajax(url, fun) {
     var xmlObj = CreateHttpRequest();
     xmlObj.onreadystatechange = function () {
         if (xmlObj.readyState == 4) {
@@ -11,7 +15,7 @@ function Ajax(file, fun) {
             }
         }
     }
-    xmlObj.open('GET', file, true);
+    xmlObj.open('GET', url, true);
     xmlObj.send(null);
 }
 
