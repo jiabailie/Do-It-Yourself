@@ -1,4 +1,3 @@
-// Client.cpp  
 #include <windows.h>
 #include <process.h>
 #include <iostream>

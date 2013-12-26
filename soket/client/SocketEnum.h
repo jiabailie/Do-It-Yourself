@@ -1,6 +1,6 @@
 #ifndef __ENUMTYPE_H__
 #define __ENUMTYPE_H__
-  
+
 struct SocketEnum
 {
 	typedef enum 
@@ -12,22 +12,22 @@ struct SocketEnum
 
 	typedef enum 
 	{
-		Error = -1,          
-		Success = 0,     
+		Error = -1,
+		Success = 0,
 		InvalidSocket,
-		InvalidAddress,      
-		InvalidPort,           
-		ConnectionRefused,   
-		Timedout,            
-		Ewouldblock,         
-		Notconnected,         
-		Einprogress,         
-		Interrupted,         
-		ConnectionAborted,   
-		ProtocolError,        
-		InvalidBuffer,  
-		ConnectionReset,     
-		AddressInUse,        
+		InvalidAddress,
+		InvalidPort,
+		ConnectionRefused,
+		Timedout,
+		Ewouldblock, 
+		Notconnected,
+		Einprogress, 
+		Interrupted, 
+		ConnectionAborted, 
+		ProtocolError,
+		InvalidBuffer,
+		ConnectionReset,
+		AddressInUse,
 		InvalidPointer ,
 		WSAStartupError,
 		BindError,
@@ -37,9 +37,9 @@ struct SocketEnum
 
 	typedef enum 
 	{
-		Receives = 0,  
-		Sends = 1,     
-		Both = 2    
-	} ShutdownMode;   
+		Receives = 0,
+		Sends = 1,
+		Both = 2
+	} ShutdownMode;
 };
 #endif __ENUMTYPE_H__

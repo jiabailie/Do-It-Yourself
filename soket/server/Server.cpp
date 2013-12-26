@@ -7,8 +7,9 @@ using namespace std;
 #include "CSocket.h"
 #include <vector>
 #include "ClientList.h"
+
 const int BUF_LEN = 1024;
-  
+
 void recv(PVOID pt)
 {
 	CSocket* csocket = (CSocket*)pt;
@@ -63,7 +64,7 @@ int main(int argc, char* argv[])
 		cout << "New user on, online users:" << list->Count() << endl;
 		_beginthread(recv, 0, csocket);
 	}
- 
+
 	getchar();
 	return 0;
-} 
+}

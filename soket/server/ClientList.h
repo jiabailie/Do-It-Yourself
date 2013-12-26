@@ -1,4 +1,3 @@
-//ClientList.h 
 #ifndef _CLIENTLIST_H_
 #define _CLIENTLIST_H_
 #include <vector>

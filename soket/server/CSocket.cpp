@@ -161,61 +161,61 @@ void CSocket::SetSocketError(SocketEnum::SocketError error)
 
 void CSocket::SetSocketError(void)
 { 
-    int nError = WSAGetLastError();
-    switch (nError)
-    {
-        case EXIT_SUCCESS:
-            SetSocketError(SocketEnum::Success);
-            break;
-        case WSAEBADF:
-        case WSAENOTCONN:
-            SetSocketError(SocketEnum::Notconnected);
-            break;
-        case WSAEINTR:
-            SetSocketError(SocketEnum::Interrupted);
-            break;
-        case WSAEACCES:
-        case WSAEAFNOSUPPORT:
-        case WSAEINVAL:
-        case WSAEMFILE:
-        case WSAENOBUFS:
-        case WSAEPROTONOSUPPORT:
-            SetSocketError(SocketEnum::InvalidSocket);
-            break;
-        case WSAECONNREFUSED :
-            SetSocketError(SocketEnum::ConnectionRefused);
-            break;
-        case WSAETIMEDOUT:
-            SetSocketError(SocketEnum::Timedout);
-            break;
-        case WSAEINPROGRESS:
-            SetSocketError(SocketEnum::Einprogress);
-            break;
-        case WSAECONNABORTED:
-            SetSocketError(SocketEnum::ConnectionAborted);
-            break;
-        case WSAEWOULDBLOCK:
-            SetSocketError(SocketEnum::Ewouldblock);
-            break;
-        case WSAENOTSOCK:
-            SetSocketError(SocketEnum::InvalidSocket);
-            break;
-        case WSAECONNRESET:
-            SetSocketError(SocketEnum::ConnectionReset);
-            break;
-        case WSANO_DATA:
-            SetSocketError(SocketEnum::InvalidAddress);
-            break;
-        case WSAEADDRINUSE:
-            SetSocketError(SocketEnum::AddressInUse);
-            break;
-        case WSAEFAULT:
-            SetSocketError(SocketEnum::InvalidPointer);
-            break;
-        default:
-            SetSocketError(SocketEnum::UnknownError);
-            break;	
-    } 
+	int nError = WSAGetLastError();
+	switch (nError)
+	{
+		case EXIT_SUCCESS:
+			SetSocketError(SocketEnum::Success);
+			break;
+		case WSAEBADF:
+		case WSAENOTCONN:
+			SetSocketError(SocketEnum::Notconnected);
+			break;
+		case WSAEINTR:
+			SetSocketError(SocketEnum::Interrupted);
+			break;
+		case WSAEACCES:
+		case WSAEAFNOSUPPORT:
+		case WSAEINVAL:
+		case WSAEMFILE:
+		case WSAENOBUFS:
+		case WSAEPROTONOSUPPORT:
+			SetSocketError(SocketEnum::InvalidSocket);
+			break;
+		case WSAECONNREFUSED :
+			SetSocketError(SocketEnum::ConnectionRefused);
+			break;
+		case WSAETIMEDOUT:
+			SetSocketError(SocketEnum::Timedout);
+			break;
+		case WSAEINPROGRESS:
+			SetSocketError(SocketEnum::Einprogress);
+			break;
+		case WSAECONNABORTED:
+			SetSocketError(SocketEnum::ConnectionAborted);
+			break;
+		case WSAEWOULDBLOCK:
+			SetSocketError(SocketEnum::Ewouldblock);
+			break;
+		case WSAENOTSOCK:
+			SetSocketError(SocketEnum::InvalidSocket);
+			break;
+		case WSAECONNRESET:
+			SetSocketError(SocketEnum::ConnectionReset);
+			break;
+		case WSANO_DATA:
+			SetSocketError(SocketEnum::InvalidAddress);
+			break;
+		case WSAEADDRINUSE:
+			SetSocketError(SocketEnum::AddressInUse);
+			break;
+		case WSAEFAULT:
+			SetSocketError(SocketEnum::InvalidPointer);
+			break;
+		default:
+			SetSocketError(SocketEnum::UnknownError);
+			break;	
+	} 
 }
  
 bool CSocket::IsSocketValid(void)
