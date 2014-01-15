@@ -10,7 +10,7 @@ namespace lab
     {
         private void print(int o)
         {
-            Console.WriteLine(string.Format("MultiTHread3:{0}", o));
+            Console.WriteLine(string.Format("MultiThread3:{0}", o));
             Thread.Sleep(1000 * 10);
         }
 

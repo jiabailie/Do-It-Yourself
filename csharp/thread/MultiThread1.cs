@@ -31,7 +31,7 @@ namespace lab
 
         public void Print()
         {
-            Console.WriteLine(string.Format("MultiTHread1:{0}", o));
+            Console.WriteLine(string.Format("MultiThread1:{0}", o));
             Thread.Sleep(1000 * 10);
         }
 

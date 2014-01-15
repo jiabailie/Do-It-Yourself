@@ -11,7 +11,7 @@ namespace lab
         private delegate void PrintDelegate(int o);
         private void print(int o)
         {
-            Console.WriteLine(string.Format("MultiTHread2:{0}", o));
+            Console.WriteLine(string.Format("MultiThread2:{0}", o));
             Thread.Sleep(1000 * 10);
         }
         public string TestMultiThread()
