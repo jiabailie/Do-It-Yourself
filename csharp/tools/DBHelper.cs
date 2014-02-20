@@ -5,20 +5,20 @@ using System.Data.SqlClient;
 using System.Collections;
 
 /// <summary>
-/// 配置参数类
+/// Parameters configuration.
 /// </summary>
 public class BaseConfig
 {
     private BaseConfig() { }
 
     /// <summary>
-    /// 数据库连接字符串
+    /// DB connection string.
     /// </summary>
     public static string ConnectionString { get; set; }
 }
 
 /// <summary>
-/// 数据访问工具集
+/// DB access tools set.
 /// </summary>
 public sealed class DBHelper
 {
@@ -29,7 +29,7 @@ public sealed class DBHelper
     private DBHelper() { }
 
     /// <summary>
-    /// 取回连接字符串
+    /// Retrieve DB connection string.
     /// </summary>
     private static string ConnectionString
     {
@@ -50,7 +50,10 @@ public sealed class DBHelper
     /// <param name="commandParameters">An array of SqlParameters to be added to command</param>
     private static void AttachParameters(SqlCommand command, SqlParameter[] commandParameters)
     {
-        if (command == null) throw new ArgumentNullException("command");
+        if (command == null)
+        {
+            throw new ArgumentNullException("command");
+        }
         if (commandParameters != null)
         {
             foreach (SqlParameter p in commandParameters)
@@ -90,12 +93,16 @@ public sealed class DBHelper
             // Check the parameter name
             if (commandParameter.ParameterName == null ||
                 commandParameter.ParameterName.Length <= 1)
+            {
                 throw new Exception(
                     string.Format(
                     "Please provide a valid parameter name on the parameter #{0}, the ParameterName property has the following value: '{1}'.",
                     i, commandParameter.ParameterName));
+            }
             if (dataRow.Table.Columns.IndexOf(commandParameter.ParameterName.Substring(1)) != -1)
+            {
                 commandParameter.Value = dataRow[commandParameter.ParameterName.Substring(1)];
+            }
             i++;
         }
     }
@@ -160,8 +167,14 @@ public sealed class DBHelper
     /// <param name="mustCloseConnection"><c>true</c> if the connection was opened by the method, otherwose is false.</param>
     private static void PrepareCommand(SqlCommand command, SqlConnection connection, SqlTransaction transaction, CommandType commandType, string commandText, SqlParameter[] commandParameters, out bool mustCloseConnection)
     {
-        if (command == null) throw new ArgumentNullException("command");
-        if (commandText == null || commandText.Length == 0) throw new ArgumentNullException("commandText");
+        if (command == null)
+        {
+            throw new ArgumentNullException("command");
+        }
+        if (commandText == null || commandText.Length == 0)
+        {
+            throw new ArgumentNullException("commandText");
+        }
 
         // If the provided connection is not open, we will open it
         if (connection.State != ConnectionState.Open)
@@ -183,7 +196,10 @@ public sealed class DBHelper
         // If we were provided a transaction, assign it
         if (transaction != null)
         {
-            if (transaction.Connection == null) throw new ArgumentException("The transaction was rollbacked or commited, please provide an open transaction.", "transaction");
+            if (transaction.Connection == null)
+            {
+                throw new ArgumentException("The transaction was rollbacked or commited, please provide an open transaction.", "transaction");
+            }
             command.Transaction = transaction;
         }
 
@@ -259,7 +275,10 @@ public sealed class DBHelper
     /// <returns>An int representing the number of rows affected by the command</returns>
     public static int ExecuteNonQuery(string connectionString, CommandType commandType, string commandText, params SqlParameter[] commandParameters)
     {
-        if (connectionString == null || connectionString.Length == 0) throw new ArgumentNullException("connectionString");
+        if (connectionString == null || connectionString.Length == 0)
+        {
+            throw new ArgumentNullException("connectionString");
+        }
 
         // Create & open a SqlConnection, and dispose of it after we are done
         using (SqlConnection connection = new SqlConnection(connectionString))
@@ -288,8 +307,14 @@ public sealed class DBHelper
     /// <returns>An int representing the number of rows affected by the command</returns>
     public static int ExecuteNonQuery(string connectionString, string spName, params object[] parameterValues)
     {
-        if (connectionString == null || connectionString.Length == 0) throw new ArgumentNullException("connectionString");
-        if (spName == null || spName.Length == 0) throw new ArgumentNullException("spName");
+        if (connectionString == null || connectionString.Length == 0)
+        {
+            throw new ArgumentNullException("connectionString");
+        }
+        if (spName == null || spName.Length == 0)
+        {
+            throw new ArgumentNullException("spName");
+        }
 
         // If we receive parameter values, we need to figure out where they go
         if ((parameterValues != null) && (parameterValues.Length > 0))
@@ -342,7 +367,10 @@ public sealed class DBHelper
     /// <returns>An int representing the number of rows affected by the command</returns>
     public static int ExecuteNonQuery(SqlConnection connection, CommandType commandType, string commandText, params SqlParameter[] commandParameters)
     {
-        if (connection == null) throw new ArgumentNullException("connection");
+        if (connection == null)
+        {
+            throw new ArgumentNullException("connection");
+        }
 
         // Create a command and prepare it for execution
         SqlCommand cmd = new SqlCommand();
@@ -354,8 +382,11 @@ public sealed class DBHelper
 
         // Detach the SqlParameters from the command object, so they can be used again
         cmd.Parameters.Clear();
+
         if (mustCloseConnection)
+        {
             connection.Close();
+        }
         return retval;
     }
 
@@ -376,8 +407,14 @@ public sealed class DBHelper
     /// <returns>An int representing the number of rows affected by the command</returns>
     public static int ExecuteNonQuery(SqlConnection connection, string spName, params object[] parameterValues)
     {
-        if (connection == null) throw new ArgumentNullException("connection");
-        if (spName == null || spName.Length == 0) throw new ArgumentNullException("spName");
+        if (connection == null)
+        {
+            throw new ArgumentNullException("connection");
+        }
+        if (spName == null || spName.Length == 0)
+        {
+            throw new ArgumentNullException("spName");
+        }
 
         // If we receive parameter values, we need to figure out where they go
         if ((parameterValues != null) && (parameterValues.Length > 0))
@@ -430,8 +467,14 @@ public sealed class DBHelper
     /// <returns>An int representing the number of rows affected by the command</returns>
     public static int ExecuteNonQuery(SqlTransaction transaction, CommandType commandType, string commandText, params SqlParameter[] commandParameters)
     {
-        if (transaction == null) throw new ArgumentNullException("transaction");
-        if (transaction != null && transaction.Connection == null) throw new ArgumentException("The transaction was rollbacked or commited, please provide an open transaction.", "transaction");
+        if (transaction == null)
+        {
+            throw new ArgumentNullException("transaction");
+        }
+        if (transaction != null && transaction.Connection == null)
+        {
+            throw new ArgumentException("The transaction was rollbacked or commited, please provide an open transaction.", "transaction");
+        }
 
         // Create a command and prepare it for execution
         SqlCommand cmd = new SqlCommand();
@@ -461,8 +504,14 @@ public sealed class DBHelper
     /// <returns>An int representing the number of rows affected by the command</returns>
     public static int ExecuteNonQuery_Trans(SqlTransaction transaction, CommandType commandType, string commandText, params SqlParameter[] commandParameters)
     {
-        if (transaction == null) throw new ArgumentNullException("transaction");
-        if (transaction != null && transaction.Connection == null) throw new ArgumentException("The transaction was rollbacked or commited, please provide an open transaction.", "transaction");
+        if (transaction == null)
+        {
+            throw new ArgumentNullException("transaction");
+        }
+        if (transaction != null && transaction.Connection == null)
+        {
+            throw new ArgumentException("The transaction was rollbacked or commited, please provide an open transaction.", "transaction");
+        }
 
         // Create a command and prepare it for execution
         SqlCommand cmd = new SqlCommand();
@@ -507,9 +556,18 @@ public sealed class DBHelper
     /// <returns>An int representing the number of rows affected by the command</returns>
     public static int ExecuteNonQuery(SqlTransaction transaction, string spName, params object[] parameterValues)
     {
-        if (transaction == null) throw new ArgumentNullException("transaction");
-        if (transaction != null && transaction.Connection == null) throw new ArgumentException("The transaction was rollbacked or commited, please provide an open transaction.", "transaction");
-        if (spName == null || spName.Length == 0) throw new ArgumentNullException("spName");
+        if (transaction == null)
+        {
+            throw new ArgumentNullException("transaction");
+        }
+        if (transaction != null && transaction.Connection == null)
+        {
+            throw new ArgumentException("The transaction was rollbacked or commited, please provide an open transaction.", "transaction");
+        }
+        if (spName == null || spName.Length == 0)
+        {
+            throw new ArgumentNullException("spName");
+        }
 
         // If we receive parameter values, we need to figure out where they go
         if ((parameterValues != null) && (parameterValues.Length > 0))
@@ -605,7 +663,10 @@ public sealed class DBHelper
     /// <returns>A dataset containing the resultset generated by the command</returns>
     public static DataSet ExecuteDataset(string connectionString, CommandType commandType, string commandText, params SqlParameter[] commandParameters)
     {
-        if (connectionString == null || connectionString.Length == 0) throw new ArgumentNullException("connectionString");
+        if (connectionString == null || connectionString.Length == 0)
+        {
+            throw new ArgumentNullException("connectionString");
+        }
 
         // Create & open a SqlConnection, and dispose of it after we are done
         using (SqlConnection connection = new SqlConnection(connectionString))
@@ -634,8 +695,14 @@ public sealed class DBHelper
     /// <returns>A dataset containing the resultset generated by the command</returns>
     public static DataSet ExecuteDataset(string connectionString, string spName, params object[] parameterValues)
     {
-        if (connectionString == null || connectionString.Length == 0) throw new ArgumentNullException("connectionString");
-        if (spName == null || spName.Length == 0) throw new ArgumentNullException("spName");
+        if (connectionString == null || connectionString.Length == 0)
+        {
+            throw new ArgumentNullException("connectionString");
+        }
+        if (spName == null || spName.Length == 0)
+        {
+            throw new ArgumentNullException("spName");
+        }
 
         // If we receive parameter values, we need to figure out where they go
         if ((parameterValues != null) && (parameterValues.Length > 0))
@@ -688,7 +755,10 @@ public sealed class DBHelper
     /// <returns>A dataset containing the resultset generated by the command</returns>
     public static DataSet ExecuteDataset(SqlConnection connection, CommandType commandType, string commandText, params SqlParameter[] commandParameters)
     {
-        if (connection == null) throw new ArgumentNullException("connection");
+        if (connection == null)
+        {
+            throw new ArgumentNullException("connection");
+        }
 
         // Create a command and prepare it for execution
         SqlCommand cmd = new SqlCommand();
@@ -731,7 +801,10 @@ public sealed class DBHelper
     {
         SqlConnection connection = new SqlConnection(connectionstr);
 
-        if (connection == null) throw new ArgumentNullException("connection");
+        if (connection == null)
+        {
+            throw new ArgumentNullException("connection");
+        }
 
         // Create a command and prepare it for execution
         SqlCommand cmd = new SqlCommand();
@@ -788,8 +861,14 @@ public sealed class DBHelper
     /// <returns>A dataset containing the resultset generated by the command</returns>
     public static DataSet ExecuteDataset(SqlConnection connection, string spName, params object[] parameterValues)
     {
-        if (connection == null) throw new ArgumentNullException("connection");
-        if (spName == null || spName.Length == 0) throw new ArgumentNullException("spName");
+        if (connection == null)
+        {
+            throw new ArgumentNullException("connection");
+        }
+        if (spName == null || spName.Length == 0)
+        {
+            throw new ArgumentNullException("spName");
+        }
 
         // If we receive parameter values, we need to figure out where they go
         if ((parameterValues != null) && (parameterValues.Length > 0))
@@ -842,8 +921,14 @@ public sealed class DBHelper
     /// <returns>A dataset containing the resultset generated by the command</returns>
     public static DataSet ExecuteDataset(SqlTransaction transaction, CommandType commandType, string commandText, params SqlParameter[] commandParameters)
     {
-        if (transaction == null) throw new ArgumentNullException("transaction");
-        if (transaction != null && transaction.Connection == null) throw new ArgumentException("The transaction was rollbacked or commited, please provide an open transaction.", "transaction");
+        if (transaction == null)
+        {
+            throw new ArgumentNullException("transaction");
+        }
+        if (transaction != null && transaction.Connection == null)
+        {
+            throw new ArgumentException("The transaction was rollbacked or commited, please provide an open transaction.", "transaction");
+        }
 
         // Create a command and prepare it for execution
         SqlCommand cmd = new SqlCommand();
@@ -879,10 +964,17 @@ public sealed class DBHelper
     /// <param name="commandText">The stored procedure name or T-SQL command</param>
     /// <param name="commandParameters">An array of SqlParamters used to execute the command</param>
     /// <returns>A dataset containing the resultset generated by the command</returns>
-    public static DataSet ExecuteDataset_Trans(SqlTransaction transaction, CommandType commandType, string commandText, params SqlParameter[] commandParameters)
+    public static DataSet ExecuteDataset_Trans(SqlTransaction transaction, CommandType commandType, 
+        string commandText, params SqlParameter[] commandParameters)
     {
-        if (transaction == null) throw new ArgumentNullException("transaction");
-        if (transaction != null && transaction.Connection == null) throw new ArgumentException("The transaction was rollbacked or commited, please provide an open transaction.", "transaction");
+        if (transaction == null)
+        {
+            throw new ArgumentNullException("transaction");
+        }
+        if (transaction != null && transaction.Connection == null)
+        {
+            throw new ArgumentException("The transaction was rollbacked or commited, please provide an open transaction.", "transaction");
+        }
 
         // Create a command and prepare it for execution
         SqlCommand cmd = new SqlCommand();
@@ -890,10 +982,10 @@ public sealed class DBHelper
         PrepareCommand(cmd, transaction.Connection, transaction, commandType, commandText, commandParameters, out mustCloseConnection);
 
         DataSet ds = new DataSet();
+
         // Create the DataAdapter & DataSet
         using (SqlDataAdapter da = new SqlDataAdapter(cmd))
         {
-
             try
             {
                 // Fill the DataSet using default values for DataTable names, etc
@@ -937,9 +1029,18 @@ public sealed class DBHelper
     /// <returns>A dataset containing the resultset generated by the command</returns>
     public static DataSet ExecuteDataset(SqlTransaction transaction, string spName, params object[] parameterValues)
     {
-        if (transaction == null) throw new ArgumentNullException("transaction");
-        if (transaction != null && transaction.Connection == null) throw new ArgumentException("The transaction was rollbacked or commited, please provide an open transaction.", "transaction");
-        if (spName == null || spName.Length == 0) throw new ArgumentNullException("spName");
+        if (transaction == null)
+        {
+            throw new ArgumentNullException("transaction");
+        }
+        if (transaction != null && transaction.Connection == null)
+        {
+            throw new ArgumentException("The transaction was rollbacked or commited, please provide an open transaction.", "transaction");
+        }
+        if (spName == null || spName.Length == 0)
+        {
+            throw new ArgumentNullException("spName");
+        }
 
         // If we receive parameter values, we need to figure out where they go
         if ((parameterValues != null) && (parameterValues.Length > 0))
@@ -1031,7 +1132,10 @@ public sealed class DBHelper
     /// <returns>SqlDataReader containing the results of the command</returns>
     private static SqlDataReader ExecuteReader(SqlConnection connection, SqlTransaction transaction, CommandType commandType, string commandText, SqlParameter[] commandParameters, SqlConnectionOwnership connectionOwnership)
     {
-        if (connection == null) throw new ArgumentNullException("connection");
+        if (connection == null)
+        {
+            throw new ArgumentNullException("connection");
+        }
 
         bool mustCloseConnection = false;
         // Create a command and prepare it for execution
@@ -1113,7 +1217,10 @@ public sealed class DBHelper
     /// <returns>A SqlDataReader containing the resultset generated by the command</returns>
     public static SqlDataReader ExecuteReader(string connectionString, CommandType commandType, string commandText, params SqlParameter[] commandParameters)
     {
-        if (connectionString == null || connectionString.Length == 0) throw new ArgumentNullException("connectionString");
+        if (connectionString == null || connectionString.Length == 0)
+        {
+            throw new ArgumentNullException("connectionString");
+        }
         SqlConnection connection = null;
         try
         {
@@ -1148,8 +1255,14 @@ public sealed class DBHelper
     /// <returns>A SqlDataReader containing the resultset generated by the command</returns>
     public static SqlDataReader ExecuteReader(string connectionString, string spName, params object[] parameterValues)
     {
-        if (connectionString == null || connectionString.Length == 0) throw new ArgumentNullException("connectionString");
-        if (spName == null || spName.Length == 0) throw new ArgumentNullException("spName");
+        if (connectionString == null || connectionString.Length == 0)
+        {
+            throw new ArgumentNullException("connectionString");
+        }
+        if (spName == null || spName.Length == 0)
+        {
+            throw new ArgumentNullException("spName");
+        }
 
         // If we receive parameter values, we need to figure out where they go
         if ((parameterValues != null) && (parameterValues.Length > 0))
@@ -1220,8 +1333,14 @@ public sealed class DBHelper
     /// <returns>A SqlDataReader containing the resultset generated by the command</returns>
     public static SqlDataReader ExecuteReader(SqlConnection connection, string spName, params object[] parameterValues)
     {
-        if (connection == null) throw new ArgumentNullException("connection");
-        if (spName == null || spName.Length == 0) throw new ArgumentNullException("spName");
+        if (connection == null)
+        {
+            throw new ArgumentNullException("connection");
+        }
+        if (spName == null || spName.Length == 0)
+        {
+            throw new ArgumentNullException("spName");
+        }
 
         // If we receive parameter values, we need to figure out where they go
         if ((parameterValues != null) && (parameterValues.Length > 0))
@@ -1269,10 +1388,17 @@ public sealed class DBHelper
     /// <param name="commandText">The stored procedure name or T-SQL command</param>
     /// <param name="commandParameters">An array of SqlParamters used to execute the command</param>
     /// <returns>A SqlDataReader containing the resultset generated by the command</returns>
-    public static SqlDataReader ExecuteReader(SqlTransaction transaction, CommandType commandType, string commandText, params SqlParameter[] commandParameters)
+    public static SqlDataReader ExecuteReader(SqlTransaction transaction, CommandType commandType, 
+        string commandText, params SqlParameter[] commandParameters)
     {
-        if (transaction == null) throw new ArgumentNullException("transaction");
-        if (transaction != null && transaction.Connection == null) throw new ArgumentException("The transaction was rollbacked or commited, please provide an open transaction.", "transaction");
+        if (transaction == null)
+        {
+            throw new ArgumentNullException("transaction");
+        }
+        if (transaction != null && transaction.Connection == null)
+        {
+            throw new ArgumentException("The transaction was rollbacked or commited, please provide an open transaction.", "transaction");
+        }
 
         // Pass through to private overload, indicating that the connection is owned by the caller
         return ExecuteReader(transaction.Connection, transaction, commandType, commandText, commandParameters, SqlConnectionOwnership.External);
@@ -1295,9 +1421,18 @@ public sealed class DBHelper
     /// <returns>A SqlDataReader containing the resultset generated by the command</returns>
     public static SqlDataReader ExecuteReader(SqlTransaction transaction, string spName, params object[] parameterValues)
     {
-        if (transaction == null) throw new ArgumentNullException("transaction");
-        if (transaction != null && transaction.Connection == null) throw new ArgumentException("The transaction was rollbacked or commited, please provide an open transaction.", "transaction");
-        if (spName == null || spName.Length == 0) throw new ArgumentNullException("spName");
+        if (transaction == null)
+        {
+            throw new ArgumentNullException("transaction");
+        }
+        if (transaction != null && transaction.Connection == null)
+        {
+            throw new ArgumentException("The transaction was rollbacked or commited, please provide an open transaction.", "transaction");
+        }
+        if (spName == null || spName.Length == 0)
+        {
+            throw new ArgumentNullException("spName");
+        }
 
         // If we receive parameter values, we need to figure out where they go
         if ((parameterValues != null) && (parameterValues.Length > 0))
@@ -1423,7 +1558,10 @@ public sealed class DBHelper
     /// <returns>An object containing the value in the 1x1 resultset generated by the command</returns>
     public static object ExecuteScalar(string connectionString, CommandType commandType, string commandText, params SqlParameter[] commandParameters)
     {
-        if (connectionString == null || connectionString.Length == 0) throw new ArgumentNullException("connectionString");
+        if (connectionString == null || connectionString.Length == 0)
+        {
+            throw new ArgumentNullException("connectionString");
+        }
         // Create & open a SqlConnection, and dispose of it after we are done
         using (SqlConnection connection = new SqlConnection(connectionString))
         {
@@ -1451,8 +1589,14 @@ public sealed class DBHelper
     /// <returns>An object containing the value in the 1x1 resultset generated by the command</returns>
     public static object ExecuteScalar(string connectionString, string spName, params object[] parameterValues)
     {
-        if (connectionString == null || connectionString.Length == 0) throw new ArgumentNullException("connectionString");
-        if (spName == null || spName.Length == 0) throw new ArgumentNullException("spName");
+        if (connectionString == null || connectionString.Length == 0)
+        {
+            throw new ArgumentNullException("connectionString");
+        }
+        if (spName == null || spName.Length == 0)
+        {
+            throw new ArgumentNullException("spName");
+        }
 
         // If we receive parameter values, we need to figure out where they go
         if ((parameterValues != null) && (parameterValues.Length > 0))
@@ -1540,7 +1684,10 @@ public sealed class DBHelper
     /// <returns>An object containing the value in the 1x1 resultset generated by the command</returns>
     public static object ExecuteScalar(SqlConnection connection, CommandType commandType, string commandText, params SqlParameter[] commandParameters)
     {
-        if (connection == null) throw new ArgumentNullException("connection");
+        if (connection == null)
+        {
+            throw new ArgumentNullException("connection");
+        }
 
         // Create a command and prepare it for execution
         SqlCommand cmd = new SqlCommand();
@@ -1577,8 +1724,14 @@ public sealed class DBHelper
     /// <returns>An object containing the value in the 1x1 resultset generated by the command</returns>
     public static object ExecuteScalar(SqlConnection connection, string spName, params object[] parameterValues)
     {
-        if (connection == null) throw new ArgumentNullException("connection");
-        if (spName == null || spName.Length == 0) throw new ArgumentNullException("spName");
+        if (connection == null)
+        {
+            throw new ArgumentNullException("connection");
+        }
+        if (spName == null || spName.Length == 0)
+        {
+            throw new ArgumentNullException("spName");
+        }
 
         // If we receive parameter values, we need to figure out where they go
         if ((parameterValues != null) && (parameterValues.Length > 0))
@@ -1631,8 +1784,14 @@ public sealed class DBHelper
     /// <returns>An object containing the value in the 1x1 resultset generated by the command</returns>
     public static object ExecuteScalar(SqlTransaction transaction, CommandType commandType, string commandText, params SqlParameter[] commandParameters)
     {
-        if (transaction == null) throw new ArgumentNullException("transaction");
-        if (transaction != null && transaction.Connection == null) throw new ArgumentException("The transaction was rollbacked or commited, please provide an open transaction.", "transaction");
+        if (transaction == null)
+        {
+            throw new ArgumentNullException("transaction");
+        }
+        if (transaction != null && transaction.Connection == null)
+        {
+            throw new ArgumentException("The transaction was rollbacked or commited, please provide an open transaction.", "transaction");
+        }
 
         // Create a command and prepare it for execution
         SqlCommand cmd = new SqlCommand();
@@ -1664,9 +1823,18 @@ public sealed class DBHelper
     /// <returns>An object containing the value in the 1x1 resultset generated by the command</returns>
     public static object ExecuteScalar(SqlTransaction transaction, string spName, params object[] parameterValues)
     {
-        if (transaction == null) throw new ArgumentNullException("transaction");
-        if (transaction != null && transaction.Connection == null) throw new ArgumentException("The transaction was rollbacked or commited, please provide an open transaction.", "transaction");
-        if (spName == null || spName.Length == 0) throw new ArgumentNullException("spName");
+        if (transaction == null)
+        {
+            throw new ArgumentNullException("transaction");
+        }
+        if (transaction != null && transaction.Connection == null)
+        {
+            throw new ArgumentException("The transaction was rollbacked or commited, please provide an open transaction.", "transaction");
+        }
+        if (spName == null || spName.Length == 0)
+        {
+            throw new ArgumentNullException("spName");
+        }
 
         // If we receive parameter values, we need to figure out where they go
         if ((parameterValues != null) && (parameterValues.Length > 0))
@@ -1722,7 +1890,10 @@ public sealed class DBHelper
     /// <returns>An XmlReader containing the resultset generated by the command</returns>
     public static XmlReader ExecuteXmlReader(SqlConnection connection, CommandType commandType, string commandText, params SqlParameter[] commandParameters)
     {
-        if (connection == null) throw new ArgumentNullException("connection");
+        if (connection == null)
+        {
+            throw new ArgumentNullException("connection");
+        }
 
         bool mustCloseConnection = false;
         // Create a command and prepare it for execution
@@ -1764,8 +1935,14 @@ public sealed class DBHelper
     /// <returns>An XmlReader containing the resultset generated by the command</returns>
     public static XmlReader ExecuteXmlReader(SqlConnection connection, string spName, params object[] parameterValues)
     {
-        if (connection == null) throw new ArgumentNullException("connection");
-        if (spName == null || spName.Length == 0) throw new ArgumentNullException("spName");
+        if (connection == null)
+        {
+            throw new ArgumentNullException("connection");
+        }
+        if (spName == null || spName.Length == 0)
+        {
+            throw new ArgumentNullException("spName");
+        }
 
         // If we receive parameter values, we need to figure out where they go
         if ((parameterValues != null) && (parameterValues.Length > 0))
@@ -1818,8 +1995,14 @@ public sealed class DBHelper
     /// <returns>An XmlReader containing the resultset generated by the command</returns>
     public static XmlReader ExecuteXmlReader(SqlTransaction transaction, CommandType commandType, string commandText, params SqlParameter[] commandParameters)
     {
-        if (transaction == null) throw new ArgumentNullException("transaction");
-        if (transaction != null && transaction.Connection == null) throw new ArgumentException("The transaction was rollbacked or commited, please provide an open transaction.", "transaction");
+        if (transaction == null)
+        {
+            throw new ArgumentNullException("transaction");
+        }
+        if (transaction != null && transaction.Connection == null)
+        {
+            throw new ArgumentException("The transaction was rollbacked or commited, please provide an open transaction.", "transaction");
+        }
 
         // Create a command and prepare it for execution
         SqlCommand cmd = new SqlCommand();
@@ -1851,9 +2034,18 @@ public sealed class DBHelper
     /// <returns>A dataset containing the resultset generated by the command</returns>
     public static XmlReader ExecuteXmlReader(SqlTransaction transaction, string spName, params object[] parameterValues)
     {
-        if (transaction == null) throw new ArgumentNullException("transaction");
-        if (transaction != null && transaction.Connection == null) throw new ArgumentException("The transaction was rollbacked or commited, please provide an open transaction.", "transaction");
-        if (spName == null || spName.Length == 0) throw new ArgumentNullException("spName");
+        if (transaction == null)
+        {
+            throw new ArgumentNullException("transaction");
+        }
+        if (transaction != null && transaction.Connection == null)
+        {
+            throw new ArgumentException("The transaction was rollbacked or commited, please provide an open transaction.", "transaction");
+        }
+        if (spName == null || spName.Length == 0)
+        {
+            throw new ArgumentNullException("spName");
+        }
 
         // If we receive parameter values, we need to figure out where they go
         if ((parameterValues != null) && (parameterValues.Length > 0))
@@ -1893,8 +2085,14 @@ public sealed class DBHelper
     /// by a user defined name (probably the actual table name)</param>
     public static void FillDataset(string connectionString, CommandType commandType, string commandText, DataSet dataSet, string[] tableNames)
     {
-        if (connectionString == null || connectionString.Length == 0) throw new ArgumentNullException("connectionString");
-        if (dataSet == null) throw new ArgumentNullException("dataSet");
+        if (connectionString == null || connectionString.Length == 0)
+        {
+            throw new ArgumentNullException("connectionString");
+        }
+        if (dataSet == null)
+        {
+            throw new ArgumentNullException("dataSet");
+        }
 
         // Create & open a SqlConnection, and dispose of it after we are done
         using (SqlConnection connection = new SqlConnection(connectionString))
@@ -1922,12 +2120,19 @@ public sealed class DBHelper
     /// <param name="tableNames">This array will be used to create table mappings allowing the DataTables to be referenced
     /// by a user defined name (probably the actual table name)
     /// </param>
-    public static void FillDataset(string connectionString, CommandType commandType,
-        string commandText, DataSet dataSet, string[] tableNames,
-        params SqlParameter[] commandParameters)
+    public static void FillDataset(string connectionString, CommandType commandType, 
+        string commandText, DataSet dataSet, 
+        string[] tableNames, params SqlParameter[] commandParameters)
     {
-        if (connectionString == null || connectionString.Length == 0) throw new ArgumentNullException("connectionString");
-        if (dataSet == null) throw new ArgumentNullException("dataSet");
+        if (connectionString == null || connectionString.Length == 0)
+        {
+            throw new ArgumentNullException("connectionString");
+        }
+        if (dataSet == null)
+        {
+            throw new ArgumentNullException("dataSet");
+        }
+
         // Create & open a SqlConnection, and dispose of it after we are done
         using (SqlConnection connection = new SqlConnection(connectionString))
         {
@@ -1956,12 +2161,17 @@ public sealed class DBHelper
     /// by a user defined name (probably the actual table name)
     /// </param>    
     /// <param name="parameterValues">An array of objects to be assigned as the input values of the stored procedure</param>
-    public static void FillDataset(string connectionString, string spName,
-        DataSet dataSet, string[] tableNames,
-        params object[] parameterValues)
+    public static void FillDataset(string connectionString, string spName, DataSet dataSet, string[] tableNames, params object[] parameterValues)
     {
-        if (connectionString == null || connectionString.Length == 0) throw new ArgumentNullException("connectionString");
-        if (dataSet == null) throw new ArgumentNullException("dataSet");
+        if (connectionString == null || connectionString.Length == 0)
+        {
+            throw new ArgumentNullException("connectionString");
+        }
+        if (dataSet == null)
+        {
+            throw new ArgumentNullException("dataSet");
+        }
+
         // Create & open a SqlConnection, and dispose of it after we are done
         using (SqlConnection connection = new SqlConnection(connectionString))
         {
@@ -1986,8 +2196,7 @@ public sealed class DBHelper
     /// <param name="tableNames">This array will be used to create table mappings allowing the DataTables to be referenced
     /// by a user defined name (probably the actual table name)
     /// </param>    
-    public static void FillDataset(SqlConnection connection, CommandType commandType,
-        string commandText, DataSet dataSet, string[] tableNames)
+    public static void FillDataset(SqlConnection connection, CommandType commandType, string commandText, DataSet dataSet, string[] tableNames)
     {
         FillDataset(connection, commandType, commandText, dataSet, tableNames, null);
     }
@@ -2037,9 +2246,18 @@ public sealed class DBHelper
         DataSet dataSet, string[] tableNames,
         params object[] parameterValues)
     {
-        if (connection == null) throw new ArgumentNullException("connection");
-        if (dataSet == null) throw new ArgumentNullException("dataSet");
-        if (spName == null || spName.Length == 0) throw new ArgumentNullException("spName");
+        if (connection == null)
+        {
+            throw new ArgumentNullException("connection");
+        }
+        if (dataSet == null)
+        {
+            throw new ArgumentNullException("dataSet");
+        }
+        if (spName == null || spName.Length == 0)
+        {
+            throw new ArgumentNullException("spName");
+        }
 
         // If we receive parameter values, we need to figure out where they go
         if ((parameterValues != null) && (parameterValues.Length > 0))
@@ -2126,10 +2344,22 @@ public sealed class DBHelper
         DataSet dataSet, string[] tableNames,
         params object[] parameterValues)
     {
-        if (transaction == null) throw new ArgumentNullException("transaction");
-        if (transaction != null && transaction.Connection == null) throw new ArgumentException("The transaction was rollbacked or commited, please provide an open transaction.", "transaction");
-        if (dataSet == null) throw new ArgumentNullException("dataSet");
-        if (spName == null || spName.Length == 0) throw new ArgumentNullException("spName");
+        if (transaction == null)
+        {
+            throw new ArgumentNullException("transaction");
+        }
+        if (transaction != null && transaction.Connection == null)
+        {
+            throw new ArgumentException("The transaction was rollbacked or commited, please provide an open transaction.", "transaction");
+        }
+        if (dataSet == null)
+        {
+            throw new ArgumentNullException("dataSet");
+        }
+        if (spName == null || spName.Length == 0)
+        {
+            throw new ArgumentNullException("spName");
+        }
 
         // If we receive parameter values, we need to figure out where they go
         if ((parameterValues != null) && (parameterValues.Length > 0))
@@ -2171,8 +2401,14 @@ public sealed class DBHelper
         string commandText, DataSet dataSet, string[] tableNames,
         params SqlParameter[] commandParameters)
     {
-        if (connection == null) throw new ArgumentNullException("connection");
-        if (dataSet == null) throw new ArgumentNullException("dataSet");
+        if (connection == null)
+        {
+            throw new ArgumentNullException("connection");
+        }
+        if (dataSet == null)
+        {
+            throw new ArgumentNullException("dataSet");
+        }
 
         // Create a command and prepare it for execution
         SqlCommand command = new SqlCommand();
@@ -2189,7 +2425,11 @@ public sealed class DBHelper
                 string tableName = "Table";
                 for (int index = 0; index < tableNames.Length; index++)
                 {
-                    if (tableNames[index] == null || tableNames[index].Length == 0) throw new ArgumentException("The tableNames parameter must contain a list of tables, a value was provided as null or empty string.", "tableNames");
+                    if (tableNames[index] == null || tableNames[index].Length == 0)
+                    {
+                        throw new ArgumentException("The tableNames parameter must contain a list of tables, a value was provided as null or empty string.",
+                            "tableNames");
+                    }
                     dataAdapter.TableMappings.Add(tableName, tableNames[index]);
                     tableName += (index + 1).ToString();
                 }
@@ -2222,10 +2462,22 @@ public sealed class DBHelper
     /// <param name="tableName">The DataTable used to update the data source.</param>
     public static void UpdateDataset(SqlCommand insertCommand, SqlCommand deleteCommand, SqlCommand updateCommand, DataSet dataSet, string tableName)
     {
-        if (insertCommand == null) throw new ArgumentNullException("insertCommand");
-        if (deleteCommand == null) throw new ArgumentNullException("deleteCommand");
-        if (updateCommand == null) throw new ArgumentNullException("updateCommand");
-        if (tableName == null || tableName.Length == 0) throw new ArgumentNullException("tableName");
+        if (insertCommand == null)
+        {
+            throw new ArgumentNullException("insertCommand");
+        }
+        if (deleteCommand == null)
+        {
+            throw new ArgumentNullException("deleteCommand");
+        }
+        if (updateCommand == null)
+        {
+            throw new ArgumentNullException("updateCommand");
+        }
+        if (tableName == null || tableName.Length == 0)
+        {
+            throw new ArgumentNullException("tableName");
+        }
 
         // Create a SqlDataAdapter, and dispose of it after we are done
         using (SqlDataAdapter dataAdapter = new SqlDataAdapter())
@@ -2259,8 +2511,14 @@ public sealed class DBHelper
     /// <returns>A valid SqlCommand object</returns>
     public static SqlCommand CreateCommand(SqlConnection connection, string spName, params string[] sourceColumns)
     {
-        if (connection == null) throw new ArgumentNullException("connection");
-        if (spName == null || spName.Length == 0) throw new ArgumentNullException("spName");
+        if (connection == null)
+        {
+            throw new ArgumentNullException("connection");
+        }
+        if (spName == null || spName.Length == 0)
+        {
+            throw new ArgumentNullException("spName");
+        }
 
         // Create a SqlCommand
         SqlCommand cmd = new SqlCommand(spName, connection);
@@ -2297,8 +2555,14 @@ public sealed class DBHelper
     /// <returns>An int representing the number of rows affected by the command</returns>
     public static int ExecuteNonQueryTypedParams(String connectionString, String spName, DataRow dataRow)
     {
-        if (connectionString == null || connectionString.Length == 0) throw new ArgumentNullException("connectionString");
-        if (spName == null || spName.Length == 0) throw new ArgumentNullException("spName");
+        if (connectionString == null || connectionString.Length == 0)
+        {
+            throw new ArgumentNullException("connectionString");
+        }
+        if (spName == null || spName.Length == 0)
+        {
+            throw new ArgumentNullException("spName");
+        }
 
         // If the row has values, the store procedure parameters must be initialized
         if (dataRow != null && dataRow.ItemArray.Length > 0)
@@ -2329,8 +2593,14 @@ public sealed class DBHelper
     /// <returns>An int representing the number of rows affected by the command</returns>
     public static int ExecuteNonQueryTypedParams(SqlConnection connection, String spName, DataRow dataRow)
     {
-        if (connection == null) throw new ArgumentNullException("connection");
-        if (spName == null || spName.Length == 0) throw new ArgumentNullException("spName");
+        if (connection == null)
+        {
+            throw new ArgumentNullException("connection");
+        }
+        if (spName == null || spName.Length == 0)
+        {
+            throw new ArgumentNullException("spName");
+        }
 
         // If the row has values, the store procedure parameters must be initialized
         if (dataRow != null && dataRow.ItemArray.Length > 0)
@@ -2361,9 +2631,18 @@ public sealed class DBHelper
     /// <returns>An int representing the number of rows affected by the command</returns>
     public static int ExecuteNonQueryTypedParams(SqlTransaction transaction, String spName, DataRow dataRow)
     {
-        if (transaction == null) throw new ArgumentNullException("transaction");
-        if (transaction != null && transaction.Connection == null) throw new ArgumentException("The transaction was rollbacked or commited, please provide an open transaction.", "transaction");
-        if (spName == null || spName.Length == 0) throw new ArgumentNullException("spName");
+        if (transaction == null)
+        {
+            throw new ArgumentNullException("transaction");
+        }
+        if (transaction != null && transaction.Connection == null)
+        {
+            throw new ArgumentException("The transaction was rollbacked or commited, please provide an open transaction.", "transaction");
+        }
+        if (spName == null || spName.Length == 0)
+        {
+            throw new ArgumentNullException("spName");
+        }
 
         // Sf the row has values, the store procedure parameters must be initialized
         if (dataRow != null && dataRow.ItemArray.Length > 0)
@@ -2396,8 +2675,14 @@ public sealed class DBHelper
     /// <returns>A dataset containing the resultset generated by the command</returns>
     public static DataSet ExecuteDatasetTypedParams(string connectionString, String spName, DataRow dataRow)
     {
-        if (connectionString == null || connectionString.Length == 0) throw new ArgumentNullException("connectionString");
-        if (spName == null || spName.Length == 0) throw new ArgumentNullException("spName");
+        if (connectionString == null || connectionString.Length == 0)
+        {
+            throw new ArgumentNullException("connectionString");
+        }
+        if (spName == null || spName.Length == 0)
+        {
+            throw new ArgumentNullException("spName");
+        }
 
         //If the row has values, the store procedure parameters must be initialized
         if (dataRow != null && dataRow.ItemArray.Length > 0)
@@ -2428,8 +2713,14 @@ public sealed class DBHelper
     /// <returns>A dataset containing the resultset generated by the command</returns>
     public static DataSet ExecuteDatasetTypedParams(SqlConnection connection, String spName, DataRow dataRow)
     {
-        if (connection == null) throw new ArgumentNullException("connection");
-        if (spName == null || spName.Length == 0) throw new ArgumentNullException("spName");
+        if (connection == null)
+        {
+            throw new ArgumentNullException("connection");
+        }
+        if (spName == null || spName.Length == 0)
+        {
+            throw new ArgumentNullException("spName");
+        }
 
         // If the row has values, the store procedure parameters must be initialized
         if (dataRow != null && dataRow.ItemArray.Length > 0)
@@ -2460,9 +2751,18 @@ public sealed class DBHelper
     /// <returns>A dataset containing the resultset generated by the command</returns>
     public static DataSet ExecuteDatasetTypedParams(SqlTransaction transaction, String spName, DataRow dataRow)
     {
-        if (transaction == null) throw new ArgumentNullException("transaction");
-        if (transaction != null && transaction.Connection == null) throw new ArgumentException("The transaction was rollbacked or commited, please provide an open transaction.", "transaction");
-        if (spName == null || spName.Length == 0) throw new ArgumentNullException("spName");
+        if (transaction == null)
+        {
+            throw new ArgumentNullException("transaction");
+        }
+        if (transaction != null && transaction.Connection == null)
+        {
+            throw new ArgumentException("The transaction was rollbacked or commited, please provide an open transaction.", "transaction");
+        }
+        if (spName == null || spName.Length == 0)
+        {
+            throw new ArgumentNullException("spName");
+        }
 
         // If the row has values, the store procedure parameters must be initialized
         if (dataRow != null && dataRow.ItemArray.Length > 0)
@@ -2496,8 +2796,14 @@ public sealed class DBHelper
     /// <returns>A SqlDataReader containing the resultset generated by the command</returns>
     public static SqlDataReader ExecuteReaderTypedParams(String connectionString, String spName, DataRow dataRow)
     {
-        if (connectionString == null || connectionString.Length == 0) throw new ArgumentNullException("connectionString");
-        if (spName == null || spName.Length == 0) throw new ArgumentNullException("spName");
+        if (connectionString == null || connectionString.Length == 0)
+        {
+            throw new ArgumentNullException("connectionString");
+        }
+        if (spName == null || spName.Length == 0)
+        {
+            throw new ArgumentNullException("spName");
+        }
 
         // If the row has values, the store procedure parameters must be initialized
         if (dataRow != null && dataRow.ItemArray.Length > 0)
@@ -2528,8 +2834,14 @@ public sealed class DBHelper
     /// <returns>A SqlDataReader containing the resultset generated by the command</returns>
     public static SqlDataReader ExecuteReaderTypedParams(SqlConnection connection, String spName, DataRow dataRow)
     {
-        if (connection == null) throw new ArgumentNullException("connection");
-        if (spName == null || spName.Length == 0) throw new ArgumentNullException("spName");
+        if (connection == null)
+        {
+            throw new ArgumentNullException("connection");
+        }
+        if (spName == null || spName.Length == 0)
+        {
+            throw new ArgumentNullException("spName");
+        }
 
         // If the row has values, the store procedure parameters must be initialized
         if (dataRow != null && dataRow.ItemArray.Length > 0)
@@ -2560,9 +2872,18 @@ public sealed class DBHelper
     /// <returns>A SqlDataReader containing the resultset generated by the command</returns>
     public static SqlDataReader ExecuteReaderTypedParams(SqlTransaction transaction, String spName, DataRow dataRow)
     {
-        if (transaction == null) throw new ArgumentNullException("transaction");
-        if (transaction != null && transaction.Connection == null) throw new ArgumentException("The transaction was rollbacked or commited, please provide an open transaction.", "transaction");
-        if (spName == null || spName.Length == 0) throw new ArgumentNullException("spName");
+        if (transaction == null)
+        {
+            throw new ArgumentNullException("transaction");
+        }
+        if (transaction != null && transaction.Connection == null)
+        {
+            throw new ArgumentException("The transaction was rollbacked or commited, please provide an open transaction.", "transaction");
+        }
+        if (spName == null || spName.Length == 0)
+        {
+            throw new ArgumentNullException("spName");
+        }
 
         // If the row has values, the store procedure parameters must be initialized
         if (dataRow != null && dataRow.ItemArray.Length > 0)
@@ -2595,8 +2916,14 @@ public sealed class DBHelper
     /// <returns>An object containing the value in the 1x1 resultset generated by the command</returns>
     public static object ExecuteScalarTypedParams(String connectionString, String spName, DataRow dataRow)
     {
-        if (connectionString == null || connectionString.Length == 0) throw new ArgumentNullException("connectionString");
-        if (spName == null || spName.Length == 0) throw new ArgumentNullException("spName");
+        if (connectionString == null || connectionString.Length == 0)
+        {
+            throw new ArgumentNullException("connectionString");
+        }
+        if (spName == null || spName.Length == 0)
+        {
+            throw new ArgumentNullException("spName");
+        }
 
         // If the row has values, the store procedure parameters must be initialized
         if (dataRow != null && dataRow.ItemArray.Length > 0)
@@ -2627,8 +2954,14 @@ public sealed class DBHelper
     /// <returns>An object containing the value in the 1x1 resultset generated by the command</returns>
     public static object ExecuteScalarTypedParams(SqlConnection connection, String spName, DataRow dataRow)
     {
-        if (connection == null) throw new ArgumentNullException("connection");
-        if (spName == null || spName.Length == 0) throw new ArgumentNullException("spName");
+        if (connection == null)
+        {
+            throw new ArgumentNullException("connection");
+        }
+        if (spName == null || spName.Length == 0)
+        {
+            throw new ArgumentNullException("spName");
+        }
 
         // If the row has values, the store procedure parameters must be initialized
         if (dataRow != null && dataRow.ItemArray.Length > 0)
@@ -2659,9 +2992,18 @@ public sealed class DBHelper
     /// <returns>An object containing the value in the 1x1 resultset generated by the command</returns>
     public static object ExecuteScalarTypedParams(SqlTransaction transaction, String spName, DataRow dataRow)
     {
-        if (transaction == null) throw new ArgumentNullException("transaction");
-        if (transaction != null && transaction.Connection == null) throw new ArgumentException("The transaction was rollbacked or commited, please provide an open transaction.", "transaction");
-        if (spName == null || spName.Length == 0) throw new ArgumentNullException("spName");
+        if (transaction == null)
+        {
+            throw new ArgumentNullException("transaction");
+        }
+        if (transaction != null && transaction.Connection == null)
+        {
+            throw new ArgumentException("The transaction was rollbacked or commited, please provide an open transaction.", "transaction");
+        }
+        if (spName == null || spName.Length == 0)
+        {
+            throw new ArgumentNullException("spName");
+        }
 
         // If the row has values, the store procedure parameters must be initialized
         if (dataRow != null && dataRow.ItemArray.Length > 0)
@@ -2694,8 +3036,14 @@ public sealed class DBHelper
     /// <returns>An XmlReader containing the resultset generated by the command</returns>
     public static XmlReader ExecuteXmlReaderTypedParams(SqlConnection connection, String spName, DataRow dataRow)
     {
-        if (connection == null) throw new ArgumentNullException("connection");
-        if (spName == null || spName.Length == 0) throw new ArgumentNullException("spName");
+        if (connection == null)
+        {
+            throw new ArgumentNullException("connection");
+        }
+        if (spName == null || spName.Length == 0)
+        {
+            throw new ArgumentNullException("spName");
+        }
 
         // If the row has values, the store procedure parameters must be initialized
         if (dataRow != null && dataRow.ItemArray.Length > 0)
@@ -2726,9 +3074,18 @@ public sealed class DBHelper
     /// <returns>An XmlReader containing the resultset generated by the command</returns>
     public static XmlReader ExecuteXmlReaderTypedParams(SqlTransaction transaction, String spName, DataRow dataRow)
     {
-        if (transaction == null) throw new ArgumentNullException("transaction");
-        if (transaction != null && transaction.Connection == null) throw new ArgumentException("The transaction was rollbacked or commited, please provide an open transaction.", "transaction");
-        if (spName == null || spName.Length == 0) throw new ArgumentNullException("spName");
+        if (transaction == null)
+        {
+            throw new ArgumentNullException("transaction");
+        }
+        if (transaction != null && transaction.Connection == null)
+        {
+            throw new ArgumentException("The transaction was rollbacked or commited, please provide an open transaction.", "transaction");
+        }
+        if (spName == null || spName.Length == 0)
+        {
+            throw new ArgumentNullException("spName");
+        }
 
         // If the row has values, the store procedure parameters must be initialized
         if (dataRow != null && dataRow.ItemArray.Length > 0)
@@ -2751,7 +3108,8 @@ public sealed class DBHelper
     #region RunProc
 
     /// <summary>
-    /// 执行一个没有参数的,只返回影响行数的存储过程。(注意,不能接收return value)
+    /// Execute a sp which is non-paramters, and only return the number of lines being influenced.
+    /// Note: It cannot accept return values.
     /// </summary>
     /// <param name="procName"></param>
     /// <returns></returns>
@@ -2761,7 +3119,8 @@ public sealed class DBHelper
     }
 
     /// <summary>
-    /// 执行一个带参数的,只返回影响行数的存储过程。(注意,不能接收return value)
+    /// Execute a sp which is non-paramters, and only return the number of lines being influenced.
+    /// Note: It cannot accept return values.
     /// </summary>
     /// <param name="procName"></param>
     /// <param name="prams"></param>
@@ -2771,7 +3130,7 @@ public sealed class DBHelper
         return ExecuteNonQuery(DBHelper.ConnectionString, CommandType.StoredProcedure, procName, prams);
     }
     /// <summary>
-    /// 执行一个不带参数的,返回SqlDataReader的存储过程。
+    /// Execute a sp which is non-parameters, and return type is SqlDataReader.
     /// </summary>
     /// <param name="procName"></param>
     /// <returns></returns>
@@ -2781,7 +3140,7 @@ public sealed class DBHelper
     }
 
     /// <summary>
-    /// 执行一个带参数的,返回SqlDataReader的存储过程。
+    /// Execute a sp which has parameters, and return type is SqlDataReader.
     /// </summary>
     /// <param name="procName"></param>
     /// <param name="prams"></param>
@@ -2792,7 +3151,7 @@ public sealed class DBHelper
     }
 
     /// <summary>
-    /// 执行一个不带参数的,返回DataSet的存储过程。
+    /// Execute a sp which is non-parameters, and return type is DataSet.
     /// </summary>
     /// <param name="procName"></param>
     /// <returns></returns>
@@ -2802,7 +3161,7 @@ public sealed class DBHelper
     }
 
     /// <summary>
-    /// 执行一个带参数的,返回DataSet的存储过程。
+    /// Execute a sp which has parameters, and return type is DataSet.
     /// </summary>
     /// <param name="procName"></param>
     /// <param name="prams"></param>
@@ -2816,7 +3175,7 @@ public sealed class DBHelper
     /// 执行一个不带参数的,返回结果集第一行第一列的数据。为object型,通过类型强制转换得到。
     /// 例如 System.Datetime dt = (System.Datetime)RunProc("GetDate");
     /// </summary>
-    /// <param name="procName">存储过程名称</param>
+    /// <param name="procName">Store procedure's name.</param>
     /// <returns></returns>
     public static void RunProc(string procName, out object obj)
     {
@@ -2898,13 +3257,19 @@ public sealed class DBHelper
         SqlParameter param;
 
         if (Size > 0)
+        {
             param = new SqlParameter(ParamName, DbType, Size);
+        }
         else
+        {
             param = new SqlParameter(ParamName, DbType);
+        }
 
         param.Direction = Direction;
         if (!(Direction == ParameterDirection.Output && Value == null))
+        {
             param.Value = Value;
+        }
 
         return param;
     }
@@ -2944,7 +3309,10 @@ partial class DataBaseAccess
     /// <param name="commandParameters">An array of SqlParameters to be added to command</param>
     private static void AttachParameters(SqlCommand command, SqlParameter[] commandParameters)
     {
-        if (command == null) throw new ArgumentNullException("command");
+        if (command == null)
+        {
+            throw new ArgumentNullException("command");
+        }
         if (commandParameters != null)
         {
             foreach (SqlParameter p in commandParameters)
@@ -2984,12 +3352,16 @@ partial class DataBaseAccess
             // Check the parameter name
             if (commandParameter.ParameterName == null ||
                 commandParameter.ParameterName.Length <= 1)
+            {
                 throw new Exception(
                     string.Format(
                     "Please provide a valid parameter name on the parameter #{0}, the ParameterName property has the following value: '{1}'.",
                     i, commandParameter.ParameterName));
+            }
             if (dataRow.Table.Columns.IndexOf(commandParameter.ParameterName.Substring(1)) != -1)
+            {
                 commandParameter.Value = dataRow[commandParameter.ParameterName.Substring(1)];
+            }
             i++;
         }
     }
@@ -3054,8 +3426,14 @@ partial class DataBaseAccess
     /// <param name="mustCloseConnection"><c>true</c> if the connection was opened by the method, otherwose is false.</param>
     private static void PrepareCommand(SqlCommand command, SqlConnection connection, SqlTransaction transaction, CommandType commandType, string commandText, SqlParameter[] commandParameters, out bool mustCloseConnection)
     {
-        if (command == null) throw new ArgumentNullException("command");
-        if (commandText == null || commandText.Length == 0) throw new ArgumentNullException("commandText");
+        if (command == null)
+        {
+            throw new ArgumentNullException("command");
+        }
+        if (commandText == null || commandText.Length == 0)
+        {
+            throw new ArgumentNullException("commandText");
+        }
 
         // If the provided connection is not open, we will open it
         if (connection.State != ConnectionState.Open)
@@ -3077,7 +3455,10 @@ partial class DataBaseAccess
         // If we were provided a transaction, assign it
         if (transaction != null)
         {
-            if (transaction.Connection == null) throw new ArgumentException("The transaction was rollbacked or commited, please provide an open transaction.", "transaction");
+            if (transaction.Connection == null)
+            {
+                throw new ArgumentException("The transaction was rollbacked or commited, please provide an open transaction.", "transaction");
+            }
             command.Transaction = transaction;
         }
 
@@ -3153,7 +3534,10 @@ partial class DataBaseAccess
     /// <returns>An int representing the number of rows affected by the command</returns>
     public static int ExecuteNonQuery(string connectionString, CommandType commandType, string commandText, params SqlParameter[] commandParameters)
     {
-        if (connectionString == null || connectionString.Length == 0) throw new ArgumentNullException("connectionString");
+        if (connectionString == null || connectionString.Length == 0)
+        {
+            throw new ArgumentNullException("connectionString");
+        }
 
         // Create & open a SqlConnection, and dispose of it after we are done
         using (SqlConnection connection = new SqlConnection(connectionString))
@@ -3182,8 +3566,14 @@ partial class DataBaseAccess
     /// <returns>An int representing the number of rows affected by the command</returns>
     public static int ExecuteNonQuery(string connectionString, string spName, params object[] parameterValues)
     {
-        if (connectionString == null || connectionString.Length == 0) throw new ArgumentNullException("connectionString");
-        if (spName == null || spName.Length == 0) throw new ArgumentNullException("spName");
+        if (connectionString == null || connectionString.Length == 0)
+        {
+            throw new ArgumentNullException("connectionString");
+        }
+        if (spName == null || spName.Length == 0)
+        {
+            throw new ArgumentNullException("spName");
+        }
 
         // If we receive parameter values, we need to figure out where they go
         if ((parameterValues != null) && (parameterValues.Length > 0))
@@ -3236,7 +3626,10 @@ partial class DataBaseAccess
     /// <returns>An int representing the number of rows affected by the command</returns>
     public static int ExecuteNonQuery(SqlConnection connection, CommandType commandType, string commandText, params SqlParameter[] commandParameters)
     {
-        if (connection == null) throw new ArgumentNullException("connection");
+        if (connection == null)
+        {
+            throw new ArgumentNullException("connection");
+        }
 
         // Create a command and prepare it for execution
         SqlCommand cmd = new SqlCommand();
@@ -3270,8 +3663,14 @@ partial class DataBaseAccess
     /// <returns>An int representing the number of rows affected by the command</returns>
     public static int ExecuteNonQuery(SqlConnection connection, string spName, params object[] parameterValues)
     {
-        if (connection == null) throw new ArgumentNullException("connection");
-        if (spName == null || spName.Length == 0) throw new ArgumentNullException("spName");
+        if (connection == null)
+        {
+            throw new ArgumentNullException("connection");
+        }
+        if (spName == null || spName.Length == 0)
+        {
+            throw new ArgumentNullException("spName");
+        }
 
         // If we receive parameter values, we need to figure out where they go
         if ((parameterValues != null) && (parameterValues.Length > 0))
@@ -3324,8 +3723,14 @@ partial class DataBaseAccess
     /// <returns>An int representing the number of rows affected by the command</returns>
     public static int ExecuteNonQuery(SqlTransaction transaction, CommandType commandType, string commandText, params SqlParameter[] commandParameters)
     {
-        if (transaction == null) throw new ArgumentNullException("transaction");
-        if (transaction != null && transaction.Connection == null) throw new ArgumentException("The transaction was rollbacked or commited, please provide an open transaction.", "transaction");
+        if (transaction == null)
+        {
+            throw new ArgumentNullException("transaction");
+        }
+        if (transaction != null && transaction.Connection == null)
+        {
+            throw new ArgumentException("The transaction was rollbacked or commited, please provide an open transaction.", "transaction");
+        }
 
         // Create a command and prepare it for execution
         SqlCommand cmd = new SqlCommand();
@@ -3356,8 +3761,14 @@ partial class DataBaseAccess
     public static int ExecuteNonQuery_Trans(SqlTransaction transaction, CommandType commandType, string commandText, params SqlParameter[] commandParameters)
     {
 
-        if (transaction == null) throw new ArgumentNullException("transaction");
-        if (transaction != null && transaction.Connection == null) throw new ArgumentException("The transaction was rollbacked or commited, please provide an open transaction.", "transaction");
+        if (transaction == null)
+        {
+            throw new ArgumentNullException("transaction");
+        }
+        if (transaction != null && transaction.Connection == null)
+        {
+            throw new ArgumentException("The transaction was rollbacked or commited, please provide an open transaction.", "transaction");
+        }
 
         // Create a command and prepare it for execution
         SqlCommand cmd = new SqlCommand();
@@ -3402,9 +3813,18 @@ partial class DataBaseAccess
     /// <returns>An int representing the number of rows affected by the command</returns>
     public static int ExecuteNonQuery(SqlTransaction transaction, string spName, params object[] parameterValues)
     {
-        if (transaction == null) throw new ArgumentNullException("transaction");
-        if (transaction != null && transaction.Connection == null) throw new ArgumentException("The transaction was rollbacked or commited, please provide an open transaction.", "transaction");
-        if (spName == null || spName.Length == 0) throw new ArgumentNullException("spName");
+        if (transaction == null)
+        {
+            throw new ArgumentNullException("transaction");
+        }
+        if (transaction != null && transaction.Connection == null)
+        {
+            throw new ArgumentException("The transaction was rollbacked or commited, please provide an open transaction.", "transaction");
+        }
+        if (spName == null || spName.Length == 0)
+        {
+            throw new ArgumentNullException("spName");
+        }
 
         // If we receive parameter values, we need to figure out where they go
         if ((parameterValues != null) && (parameterValues.Length > 0))
@@ -3501,7 +3921,10 @@ partial class DataBaseAccess
     /// <returns>A dataset containing the resultset generated by the command</returns>
     public static DataSet ExecuteDataset(string connectionString, CommandType commandType, string commandText, params SqlParameter[] commandParameters)
     {
-        if (connectionString == null || connectionString.Length == 0) throw new ArgumentNullException("connectionString");
+        if (connectionString == null || connectionString.Length == 0)
+        {
+            throw new ArgumentNullException("connectionString");
+        }
 
         // Create & open a SqlConnection, and dispose of it after we are done
         using (SqlConnection connection = new SqlConnection(connectionString))
@@ -3530,8 +3953,14 @@ partial class DataBaseAccess
     /// <returns>A dataset containing the resultset generated by the command</returns>
     public static DataSet ExecuteDataset(string connectionString, string spName, params object[] parameterValues)
     {
-        if (connectionString == null || connectionString.Length == 0) throw new ArgumentNullException("connectionString");
-        if (spName == null || spName.Length == 0) throw new ArgumentNullException("spName");
+        if (connectionString == null || connectionString.Length == 0)
+        {
+            throw new ArgumentNullException("connectionString");
+        }
+        if (spName == null || spName.Length == 0)
+        {
+            throw new ArgumentNullException("spName");
+        }
 
         // If we receive parameter values, we need to figure out where they go
         if ((parameterValues != null) && (parameterValues.Length > 0))
@@ -3584,7 +4013,10 @@ partial class DataBaseAccess
     /// <returns>A dataset containing the resultset generated by the command</returns>
     public static DataSet ExecuteDataset(SqlConnection connection, CommandType commandType, string commandText, params SqlParameter[] commandParameters)
     {
-        if (connection == null) throw new ArgumentNullException("connection");
+        if (connection == null)
+        {
+            throw new ArgumentNullException("connection");
+        }
 
         // Create a command and prepare it for execution
         SqlCommand cmd = new SqlCommand();
@@ -3627,7 +4059,10 @@ partial class DataBaseAccess
     {
         SqlConnection connection = new SqlConnection(connectionstr);
 
-        if (connection == null) throw new ArgumentNullException("connection");
+        if (connection == null)
+        {
+            throw new ArgumentNullException("connection");
+        }
 
         // Create a command and prepare it for execution
         SqlCommand cmd = new SqlCommand();
@@ -3684,8 +4119,14 @@ partial class DataBaseAccess
     /// <returns>A dataset containing the resultset generated by the command</returns>
     public static DataSet ExecuteDataset(SqlConnection connection, string spName, params object[] parameterValues)
     {
-        if (connection == null) throw new ArgumentNullException("connection");
-        if (spName == null || spName.Length == 0) throw new ArgumentNullException("spName");
+        if (connection == null)
+        {
+            throw new ArgumentNullException("connection");
+        }
+        if (spName == null || spName.Length == 0)
+        {
+            throw new ArgumentNullException("spName");
+        }
 
         // If we receive parameter values, we need to figure out where they go
         if ((parameterValues != null) && (parameterValues.Length > 0))
@@ -3738,8 +4179,14 @@ partial class DataBaseAccess
     /// <returns>A dataset containing the resultset generated by the command</returns>
     public static DataSet ExecuteDataset(SqlTransaction transaction, CommandType commandType, string commandText, params SqlParameter[] commandParameters)
     {
-        if (transaction == null) throw new ArgumentNullException("transaction");
-        if (transaction != null && transaction.Connection == null) throw new ArgumentException("The transaction was rollbacked or commited, please provide an open transaction.", "transaction");
+        if (transaction == null)
+        {
+            throw new ArgumentNullException("transaction");
+        }
+        if (transaction != null && transaction.Connection == null)
+        {
+            throw new ArgumentException("The transaction was rollbacked or commited, please provide an open transaction.", "transaction");
+        }
 
         // Create a command and prepare it for execution
         SqlCommand cmd = new SqlCommand();
@@ -3777,8 +4224,14 @@ partial class DataBaseAccess
     /// <returns>A dataset containing the resultset generated by the command</returns>
     public static DataSet ExecuteDataset_Trans(SqlTransaction transaction, CommandType commandType, string commandText, params SqlParameter[] commandParameters)
     {
-        if (transaction == null) throw new ArgumentNullException("transaction");
-        if (transaction != null && transaction.Connection == null) throw new ArgumentException("The transaction was rollbacked or commited, please provide an open transaction.", "transaction");
+        if (transaction == null)
+        {
+            throw new ArgumentNullException("transaction");
+        }
+        if (transaction != null && transaction.Connection == null)
+        {
+            throw new ArgumentException("The transaction was rollbacked or commited, please provide an open transaction.", "transaction");
+        }
 
         // Create a command and prepare it for execution
         SqlCommand cmd = new SqlCommand();
@@ -3832,9 +4285,18 @@ partial class DataBaseAccess
     /// <returns>A dataset containing the resultset generated by the command</returns>
     public static DataSet ExecuteDataset(SqlTransaction transaction, string spName, params object[] parameterValues)
     {
-        if (transaction == null) throw new ArgumentNullException("transaction");
-        if (transaction != null && transaction.Connection == null) throw new ArgumentException("The transaction was rollbacked or commited, please provide an open transaction.", "transaction");
-        if (spName == null || spName.Length == 0) throw new ArgumentNullException("spName");
+        if (transaction == null)
+        {
+            throw new ArgumentNullException("transaction");
+        }
+        if (transaction != null && transaction.Connection == null)
+        {
+            throw new ArgumentException("The transaction was rollbacked or commited, please provide an open transaction.", "transaction");
+        }
+        if (spName == null || spName.Length == 0)
+        {
+            throw new ArgumentNullException("spName");
+        }
 
         // If we receive parameter values, we need to figure out where they go
         if ((parameterValues != null) && (parameterValues.Length > 0))
@@ -3925,9 +4387,13 @@ partial class DataBaseAccess
     /// <param name="commandParameters">An array of SqlParameters to be associated with the command or 'null' if no parameters are required</param>
     /// <param name="connectionOwnership">Indicates whether the connection parameter was provided by the caller, or created by Database</param>
     /// <returns>SqlDataReader containing the results of the command</returns>
-    private static SqlDataReader ExecuteReader(SqlConnection connection, SqlTransaction transaction, CommandType commandType, string commandText, SqlParameter[] commandParameters, SqlConnectionOwnership connectionOwnership)
+    private static SqlDataReader ExecuteReader(SqlConnection connection, SqlTransaction transaction, CommandType commandType, 
+        string commandText, SqlParameter[] commandParameters, SqlConnectionOwnership connectionOwnership)
     {
-        if (connection == null) throw new ArgumentNullException("connection");
+        if (connection == null)
+        {
+            throw new ArgumentNullException("connection");
+        }
 
         bool mustCloseConnection = false;
         // Create a command and prepare it for execution
@@ -4008,7 +4474,10 @@ partial class DataBaseAccess
     /// <returns>A SqlDataReader containing the resultset generated by the command</returns>
     public static SqlDataReader ExecuteReader(string connectionString, CommandType commandType, string commandText, params SqlParameter[] commandParameters)
     {
-        if (connectionString == null || connectionString.Length == 0) throw new ArgumentNullException("connectionString");
+        if (connectionString == null || connectionString.Length == 0)
+        {
+            throw new ArgumentNullException("connectionString");
+        }
         SqlConnection connection = null;
         try
         {
@@ -4043,8 +4512,14 @@ partial class DataBaseAccess
     /// <returns>A SqlDataReader containing the resultset generated by the command</returns>
     public static SqlDataReader ExecuteReader(string connectionString, string spName, params object[] parameterValues)
     {
-        if (connectionString == null || connectionString.Length == 0) throw new ArgumentNullException("connectionString");
-        if (spName == null || spName.Length == 0) throw new ArgumentNullException("spName");
+        if (connectionString == null || connectionString.Length == 0)
+        {
+            throw new ArgumentNullException("connectionString");
+        }
+        if (spName == null || spName.Length == 0)
+        {
+            throw new ArgumentNullException("spName");
+        }
 
         // If we receive parameter values, we need to figure out where they go
         if ((parameterValues != null) && (parameterValues.Length > 0))
@@ -4115,8 +4590,14 @@ partial class DataBaseAccess
     /// <returns>A SqlDataReader containing the resultset generated by the command</returns>
     public static SqlDataReader ExecuteReader(SqlConnection connection, string spName, params object[] parameterValues)
     {
-        if (connection == null) throw new ArgumentNullException("connection");
-        if (spName == null || spName.Length == 0) throw new ArgumentNullException("spName");
+        if (connection == null)
+        {
+            throw new ArgumentNullException("connection");
+        }
+        if (spName == null || spName.Length == 0)
+        {
+            throw new ArgumentNullException("spName");
+        }
 
         // If we receive parameter values, we need to figure out where they go
         if ((parameterValues != null) && (parameterValues.Length > 0))
@@ -4166,8 +4647,14 @@ partial class DataBaseAccess
     /// <returns>A SqlDataReader containing the resultset generated by the command</returns>
     public static SqlDataReader ExecuteReader(SqlTransaction transaction, CommandType commandType, string commandText, params SqlParameter[] commandParameters)
     {
-        if (transaction == null) throw new ArgumentNullException("transaction");
-        if (transaction != null && transaction.Connection == null) throw new ArgumentException("The transaction was rollbacked or commited, please provide an open transaction.", "transaction");
+        if (transaction == null)
+        {
+            throw new ArgumentNullException("transaction");
+        }
+        if (transaction != null && transaction.Connection == null)
+        {
+            throw new ArgumentException("The transaction was rollbacked or commited, please provide an open transaction.", "transaction");
+        }
 
         // Pass through to private overload, indicating that the connection is owned by the caller
         return ExecuteReader(transaction.Connection, transaction, commandType, commandText, commandParameters, SqlConnectionOwnership.External);
@@ -4190,9 +4677,18 @@ partial class DataBaseAccess
     /// <returns>A SqlDataReader containing the resultset generated by the command</returns>
     public static SqlDataReader ExecuteReader(SqlTransaction transaction, string spName, params object[] parameterValues)
     {
-        if (transaction == null) throw new ArgumentNullException("transaction");
-        if (transaction != null && transaction.Connection == null) throw new ArgumentException("The transaction was rollbacked or commited, please provide an open transaction.", "transaction");
-        if (spName == null || spName.Length == 0) throw new ArgumentNullException("spName");
+        if (transaction == null)
+        {
+            throw new ArgumentNullException("transaction");
+        }
+        if (transaction != null && transaction.Connection == null)
+        {
+            throw new ArgumentException("The transaction was rollbacked or commited, please provide an open transaction.", "transaction");
+        }
+        if (spName == null || spName.Length == 0)
+        {
+            throw new ArgumentNullException("spName");
+        }
 
         // If we receive parameter values, we need to figure out where they go
         if ((parameterValues != null) && (parameterValues.Length > 0))
@@ -4318,7 +4814,10 @@ partial class DataBaseAccess
     /// <returns>An object containing the value in the 1x1 resultset generated by the command</returns>
     public static object ExecuteScalar(string connectionString, CommandType commandType, string commandText, params SqlParameter[] commandParameters)
     {
-        if (connectionString == null || connectionString.Length == 0) throw new ArgumentNullException("connectionString");
+        if (connectionString == null || connectionString.Length == 0)
+        {
+            throw new ArgumentNullException("connectionString");
+        }
         // Create & open a SqlConnection, and dispose of it after we are done
         using (SqlConnection connection = new SqlConnection(connectionString))
         {
@@ -4346,8 +4845,14 @@ partial class DataBaseAccess
     /// <returns>An object containing the value in the 1x1 resultset generated by the command</returns>
     public static object ExecuteScalar(string connectionString, string spName, params object[] parameterValues)
     {
-        if (connectionString == null || connectionString.Length == 0) throw new ArgumentNullException("connectionString");
-        if (spName == null || spName.Length == 0) throw new ArgumentNullException("spName");
+        if (connectionString == null || connectionString.Length == 0)
+        {
+            throw new ArgumentNullException("connectionString");
+        }
+        if (spName == null || spName.Length == 0)
+        {
+            throw new ArgumentNullException("spName");
+        }
 
         // If we receive parameter values, we need to figure out where they go
         if ((parameterValues != null) && (parameterValues.Length > 0))
@@ -4435,7 +4940,10 @@ partial class DataBaseAccess
     /// <returns>An object containing the value in the 1x1 resultset generated by the command</returns>
     public static object ExecuteScalar(SqlConnection connection, CommandType commandType, string commandText, params SqlParameter[] commandParameters)
     {
-        if (connection == null) throw new ArgumentNullException("connection");
+        if (connection == null)
+        {
+            throw new ArgumentNullException("connection");
+        }
 
         // Create a command and prepare it for execution
         SqlCommand cmd = new SqlCommand();
@@ -4472,8 +4980,14 @@ partial class DataBaseAccess
     /// <returns>An object containing the value in the 1x1 resultset generated by the command</returns>
     public static object ExecuteScalar(SqlConnection connection, string spName, params object[] parameterValues)
     {
-        if (connection == null) throw new ArgumentNullException("connection");
-        if (spName == null || spName.Length == 0) throw new ArgumentNullException("spName");
+        if (connection == null)
+        {
+            throw new ArgumentNullException("connection");
+        }
+        if (spName == null || spName.Length == 0)
+        {
+            throw new ArgumentNullException("spName");
+        }
 
         // If we receive parameter values, we need to figure out where they go
         if ((parameterValues != null) && (parameterValues.Length > 0))
@@ -4526,8 +5040,14 @@ partial class DataBaseAccess
     /// <returns>An object containing the value in the 1x1 resultset generated by the command</returns>
     public static object ExecuteScalar(SqlTransaction transaction, CommandType commandType, string commandText, params SqlParameter[] commandParameters)
     {
-        if (transaction == null) throw new ArgumentNullException("transaction");
-        if (transaction != null && transaction.Connection == null) throw new ArgumentException("The transaction was rollbacked or commited, please provide an open transaction.", "transaction");
+        if (transaction == null)
+        {
+            throw new ArgumentNullException("transaction");
+        }
+        if (transaction != null && transaction.Connection == null)
+        {
+            throw new ArgumentException("The transaction was rollbacked or commited, please provide an open transaction.", "transaction");
+        }
 
         // Create a command and prepare it for execution
         SqlCommand cmd = new SqlCommand();
@@ -4559,9 +5079,18 @@ partial class DataBaseAccess
     /// <returns>An object containing the value in the 1x1 resultset generated by the command</returns>
     public static object ExecuteScalar(SqlTransaction transaction, string spName, params object[] parameterValues)
     {
-        if (transaction == null) throw new ArgumentNullException("transaction");
-        if (transaction != null && transaction.Connection == null) throw new ArgumentException("The transaction was rollbacked or commited, please provide an open transaction.", "transaction");
-        if (spName == null || spName.Length == 0) throw new ArgumentNullException("spName");
+        if (transaction == null)
+        {
+            throw new ArgumentNullException("transaction");
+        }
+        if (transaction != null && transaction.Connection == null)
+        {
+            throw new ArgumentException("The transaction was rollbacked or commited, please provide an open transaction.", "transaction");
+        }
+        if (spName == null || spName.Length == 0)
+        {
+            throw new ArgumentNullException("spName");
+        }
 
         // If we receive parameter values, we need to figure out where they go
         if ((parameterValues != null) && (parameterValues.Length > 0))
@@ -4617,7 +5146,10 @@ partial class DataBaseAccess
     /// <returns>An XmlReader containing the resultset generated by the command</returns>
     public static XmlReader ExecuteXmlReader(SqlConnection connection, CommandType commandType, string commandText, params SqlParameter[] commandParameters)
     {
-        if (connection == null) throw new ArgumentNullException("connection");
+        if (connection == null)
+        {
+            throw new ArgumentNullException("connection");
+        }
 
         bool mustCloseConnection = false;
         // Create a command and prepare it for execution
@@ -4659,8 +5191,14 @@ partial class DataBaseAccess
     /// <returns>An XmlReader containing the resultset generated by the command</returns>
     public static XmlReader ExecuteXmlReader(SqlConnection connection, string spName, params object[] parameterValues)
     {
-        if (connection == null) throw new ArgumentNullException("connection");
-        if (spName == null || spName.Length == 0) throw new ArgumentNullException("spName");
+        if (connection == null)
+        {
+            throw new ArgumentNullException("connection");
+        }
+        if (spName == null || spName.Length == 0)
+        {
+            throw new ArgumentNullException("spName");
+        }
 
         // If we receive parameter values, we need to figure out where they go
         if ((parameterValues != null) && (parameterValues.Length > 0))
@@ -4711,10 +5249,17 @@ partial class DataBaseAccess
     /// <param name="commandText">The stored procedure name or T-SQL command using "FOR XML AUTO"</param>
     /// <param name="commandParameters">An array of SqlParamters used to execute the command</param>
     /// <returns>An XmlReader containing the resultset generated by the command</returns>
-    public static XmlReader ExecuteXmlReader(SqlTransaction transaction, CommandType commandType, string commandText, params SqlParameter[] commandParameters)
+    public static XmlReader ExecuteXmlReader(SqlTransaction transaction, CommandType commandType, 
+        string commandText, params SqlParameter[] commandParameters)
     {
-        if (transaction == null) throw new ArgumentNullException("transaction");
-        if (transaction != null && transaction.Connection == null) throw new ArgumentException("The transaction was rollbacked or commited, please provide an open transaction.", "transaction");
+        if (transaction == null)
+        {
+            throw new ArgumentNullException("transaction");
+        }
+        if (transaction != null && transaction.Connection == null)
+        {
+            throw new ArgumentException("The transaction was rollbacked or commited, please provide an open transaction.", "transaction");
+        }
 
         // Create a command and prepare it for execution
         SqlCommand cmd = new SqlCommand();
@@ -4746,9 +5291,18 @@ partial class DataBaseAccess
     /// <returns>A dataset containing the resultset generated by the command</returns>
     public static XmlReader ExecuteXmlReader(SqlTransaction transaction, string spName, params object[] parameterValues)
     {
-        if (transaction == null) throw new ArgumentNullException("transaction");
-        if (transaction != null && transaction.Connection == null) throw new ArgumentException("The transaction was rollbacked or commited, please provide an open transaction.", "transaction");
-        if (spName == null || spName.Length == 0) throw new ArgumentNullException("spName");
+        if (transaction == null)
+        {
+            throw new ArgumentNullException("transaction");
+        }
+        if (transaction != null && transaction.Connection == null)
+        {
+            throw new ArgumentException("The transaction was rollbacked or commited, please provide an open transaction.", "transaction");
+        }
+        if (spName == null || spName.Length == 0)
+        {
+            throw new ArgumentNullException("spName");
+        }
 
         // If we receive parameter values, we need to figure out where they go
         if ((parameterValues != null) && (parameterValues.Length > 0))
@@ -4788,8 +5342,14 @@ partial class DataBaseAccess
     /// by a user defined name (probably the actual table name)</param>
     public static void FillDataset(string connectionString, CommandType commandType, string commandText, DataSet dataSet, string[] tableNames)
     {
-        if (connectionString == null || connectionString.Length == 0) throw new ArgumentNullException("connectionString");
-        if (dataSet == null) throw new ArgumentNullException("dataSet");
+        if (connectionString == null || connectionString.Length == 0)
+        {
+            throw new ArgumentNullException("connectionString");
+        }
+        if (dataSet == null)
+        {
+            throw new ArgumentNullException("dataSet");
+        }
 
         // Create & open a SqlConnection, and dispose of it after we are done
         using (SqlConnection connection = new SqlConnection(connectionString))
@@ -4821,8 +5381,14 @@ partial class DataBaseAccess
         string commandText, DataSet dataSet, string[] tableNames,
         params SqlParameter[] commandParameters)
     {
-        if (connectionString == null || connectionString.Length == 0) throw new ArgumentNullException("connectionString");
-        if (dataSet == null) throw new ArgumentNullException("dataSet");
+        if (connectionString == null || connectionString.Length == 0)
+        {
+            throw new ArgumentNullException("connectionString");
+        }
+        if (dataSet == null)
+        {
+            throw new ArgumentNullException("dataSet");
+        }
         // Create & open a SqlConnection, and dispose of it after we are done
         using (SqlConnection connection = new SqlConnection(connectionString))
         {
@@ -4855,8 +5421,14 @@ partial class DataBaseAccess
         DataSet dataSet, string[] tableNames,
         params object[] parameterValues)
     {
-        if (connectionString == null || connectionString.Length == 0) throw new ArgumentNullException("connectionString");
-        if (dataSet == null) throw new ArgumentNullException("dataSet");
+        if (connectionString == null || connectionString.Length == 0)
+        {
+            throw new ArgumentNullException("connectionString");
+        }
+        if (dataSet == null)
+        {
+            throw new ArgumentNullException("dataSet");
+        }
         // Create & open a SqlConnection, and dispose of it after we are done
         using (SqlConnection connection = new SqlConnection(connectionString))
         {
@@ -4932,9 +5504,18 @@ partial class DataBaseAccess
         DataSet dataSet, string[] tableNames,
         params object[] parameterValues)
     {
-        if (connection == null) throw new ArgumentNullException("connection");
-        if (dataSet == null) throw new ArgumentNullException("dataSet");
-        if (spName == null || spName.Length == 0) throw new ArgumentNullException("spName");
+        if (connection == null)
+        {
+            throw new ArgumentNullException("connection");
+        }
+        if (dataSet == null)
+        {
+            throw new ArgumentNullException("dataSet");
+        }
+        if (spName == null || spName.Length == 0)
+        {
+            throw new ArgumentNullException("spName");
+        }
 
         // If we receive parameter values, we need to figure out where they go
         if ((parameterValues != null) && (parameterValues.Length > 0))
@@ -5021,10 +5602,22 @@ partial class DataBaseAccess
         DataSet dataSet, string[] tableNames,
         params object[] parameterValues)
     {
-        if (transaction == null) throw new ArgumentNullException("transaction");
-        if (transaction != null && transaction.Connection == null) throw new ArgumentException("The transaction was rollbacked or commited, please provide an open transaction.", "transaction");
-        if (dataSet == null) throw new ArgumentNullException("dataSet");
-        if (spName == null || spName.Length == 0) throw new ArgumentNullException("spName");
+        if (transaction == null)
+        {
+            throw new ArgumentNullException("transaction");
+        }
+        if (transaction != null && transaction.Connection == null)
+        {
+            throw new ArgumentException("The transaction was rollbacked or commited, please provide an open transaction.", "transaction");
+        }
+        if (dataSet == null)
+        {
+            throw new ArgumentNullException("dataSet");
+        }
+        if (spName == null || spName.Length == 0)
+        {
+            throw new ArgumentNullException("spName");
+        }
 
         // If we receive parameter values, we need to figure out where they go
         if ((parameterValues != null) && (parameterValues.Length > 0))
@@ -5066,8 +5659,14 @@ partial class DataBaseAccess
         string commandText, DataSet dataSet, string[] tableNames,
         params SqlParameter[] commandParameters)
     {
-        if (connection == null) throw new ArgumentNullException("connection");
-        if (dataSet == null) throw new ArgumentNullException("dataSet");
+        if (connection == null)
+        {
+            throw new ArgumentNullException("connection");
+        }
+        if (dataSet == null)
+        {
+            throw new ArgumentNullException("dataSet");
+        }
 
         // Create a command and prepare it for execution
         SqlCommand command = new SqlCommand();
@@ -5084,7 +5683,11 @@ partial class DataBaseAccess
                 string tableName = "Table";
                 for (int index = 0; index < tableNames.Length; index++)
                 {
-                    if (tableNames[index] == null || tableNames[index].Length == 0) throw new ArgumentException("The tableNames parameter must contain a list of tables, a value was provided as null or empty string.", "tableNames");
+                    if (tableNames[index] == null || tableNames[index].Length == 0)
+                    {
+                        throw new ArgumentException("The tableNames parameter must contain a list of tables, a value was provided as null or empty string.", 
+                            "tableNames");
+                    }
                     dataAdapter.TableMappings.Add(tableName, tableNames[index]);
                     tableName += (index + 1).ToString();
                 }
@@ -5117,10 +5720,22 @@ partial class DataBaseAccess
     /// <param name="tableName">The DataTable used to update the data source.</param>
     public static void UpdateDataset(SqlCommand insertCommand, SqlCommand deleteCommand, SqlCommand updateCommand, DataSet dataSet, string tableName)
     {
-        if (insertCommand == null) throw new ArgumentNullException("insertCommand");
-        if (deleteCommand == null) throw new ArgumentNullException("deleteCommand");
-        if (updateCommand == null) throw new ArgumentNullException("updateCommand");
-        if (tableName == null || tableName.Length == 0) throw new ArgumentNullException("tableName");
+        if (insertCommand == null)
+        {
+            throw new ArgumentNullException("insertCommand");
+        }
+        if (deleteCommand == null)
+        {
+            throw new ArgumentNullException("deleteCommand");
+        }
+        if (updateCommand == null)
+        {
+            throw new ArgumentNullException("updateCommand");
+        }
+        if (tableName == null || tableName.Length == 0)
+        {
+            throw new ArgumentNullException("tableName");
+        }
 
         // Create a SqlDataAdapter, and dispose of it after we are done
         using (SqlDataAdapter dataAdapter = new SqlDataAdapter())
@@ -5154,8 +5769,14 @@ partial class DataBaseAccess
     /// <returns>A valid SqlCommand object</returns>
     public static SqlCommand CreateCommand(SqlConnection connection, string spName, params string[] sourceColumns)
     {
-        if (connection == null) throw new ArgumentNullException("connection");
-        if (spName == null || spName.Length == 0) throw new ArgumentNullException("spName");
+        if (connection == null)
+        {
+            throw new ArgumentNullException("connection");
+        }
+        if (spName == null || spName.Length == 0)
+        {
+            throw new ArgumentNullException("spName");
+        }
 
         // Create a SqlCommand
         SqlCommand cmd = new SqlCommand(spName, connection);
@@ -5192,8 +5813,14 @@ partial class DataBaseAccess
     /// <returns>An int representing the number of rows affected by the command</returns>
     public static int ExecuteNonQueryTypedParams(String connectionString, String spName, DataRow dataRow)
     {
-        if (connectionString == null || connectionString.Length == 0) throw new ArgumentNullException("connectionString");
-        if (spName == null || spName.Length == 0) throw new ArgumentNullException("spName");
+        if (connectionString == null || connectionString.Length == 0)
+        {
+            throw new ArgumentNullException("connectionString");
+        }
+        if (spName == null || spName.Length == 0)
+        {
+            throw new ArgumentNullException("spName");
+        }
 
         // If the row has values, the store procedure parameters must be initialized
         if (dataRow != null && dataRow.ItemArray.Length > 0)
@@ -5224,8 +5851,14 @@ partial class DataBaseAccess
     /// <returns>An int representing the number of rows affected by the command</returns>
     public static int ExecuteNonQueryTypedParams(SqlConnection connection, String spName, DataRow dataRow)
     {
-        if (connection == null) throw new ArgumentNullException("connection");
-        if (spName == null || spName.Length == 0) throw new ArgumentNullException("spName");
+        if (connection == null)
+        {
+            throw new ArgumentNullException("connection");
+        }
+        if (spName == null || spName.Length == 0)
+        {
+            throw new ArgumentNullException("spName");
+        }
 
         // If the row has values, the store procedure parameters must be initialized
         if (dataRow != null && dataRow.ItemArray.Length > 0)
@@ -5256,9 +5889,18 @@ partial class DataBaseAccess
     /// <returns>An int representing the number of rows affected by the command</returns>
     public static int ExecuteNonQueryTypedParams(SqlTransaction transaction, String spName, DataRow dataRow)
     {
-        if (transaction == null) throw new ArgumentNullException("transaction");
-        if (transaction != null && transaction.Connection == null) throw new ArgumentException("The transaction was rollbacked or commited, please provide an open transaction.", "transaction");
-        if (spName == null || spName.Length == 0) throw new ArgumentNullException("spName");
+        if (transaction == null)
+        {
+            throw new ArgumentNullException("transaction");
+        }
+        if (transaction != null && transaction.Connection == null)
+        {
+            throw new ArgumentException("The transaction was rollbacked or commited, please provide an open transaction.", "transaction");
+        }
+        if (spName == null || spName.Length == 0)
+        {
+            throw new ArgumentNullException("spName");
+        }
 
         // Sf the row has values, the store procedure parameters must be initialized
         if (dataRow != null && dataRow.ItemArray.Length > 0)
@@ -5291,8 +5933,14 @@ partial class DataBaseAccess
     /// <returns>A dataset containing the resultset generated by the command</returns>
     public static DataSet ExecuteDatasetTypedParams(string connectionString, String spName, DataRow dataRow)
     {
-        if (connectionString == null || connectionString.Length == 0) throw new ArgumentNullException("connectionString");
-        if (spName == null || spName.Length == 0) throw new ArgumentNullException("spName");
+        if (connectionString == null || connectionString.Length == 0)
+        {
+            throw new ArgumentNullException("connectionString");
+        }
+        if (spName == null || spName.Length == 0)
+        {
+            throw new ArgumentNullException("spName");
+        }
 
         //If the row has values, the store procedure parameters must be initialized
         if (dataRow != null && dataRow.ItemArray.Length > 0)
@@ -5323,8 +5971,14 @@ partial class DataBaseAccess
     /// <returns>A dataset containing the resultset generated by the command</returns>
     public static DataSet ExecuteDatasetTypedParams(SqlConnection connection, String spName, DataRow dataRow)
     {
-        if (connection == null) throw new ArgumentNullException("connection");
-        if (spName == null || spName.Length == 0) throw new ArgumentNullException("spName");
+        if (connection == null)
+        {
+            throw new ArgumentNullException("connection");
+        }
+        if (spName == null || spName.Length == 0)
+        {
+            throw new ArgumentNullException("spName");
+        }
 
         // If the row has values, the store procedure parameters must be initialized
         if (dataRow != null && dataRow.ItemArray.Length > 0)
@@ -5355,9 +6009,18 @@ partial class DataBaseAccess
     /// <returns>A dataset containing the resultset generated by the command</returns>
     public static DataSet ExecuteDatasetTypedParams(SqlTransaction transaction, String spName, DataRow dataRow)
     {
-        if (transaction == null) throw new ArgumentNullException("transaction");
-        if (transaction != null && transaction.Connection == null) throw new ArgumentException("The transaction was rollbacked or commited, please provide an open transaction.", "transaction");
-        if (spName == null || spName.Length == 0) throw new ArgumentNullException("spName");
+        if (transaction == null)
+        {
+            throw new ArgumentNullException("transaction");
+        }
+        if (transaction != null && transaction.Connection == null)
+        {
+            throw new ArgumentException("The transaction was rollbacked or commited, please provide an open transaction.", "transaction");
+        }
+        if (spName == null || spName.Length == 0)
+        {
+            throw new ArgumentNullException("spName");
+        }
 
         // If the row has values, the store procedure parameters must be initialized
         if (dataRow != null && dataRow.ItemArray.Length > 0)
@@ -5391,8 +6054,14 @@ partial class DataBaseAccess
     /// <returns>A SqlDataReader containing the resultset generated by the command</returns>
     public static SqlDataReader ExecuteReaderTypedParams(String connectionString, String spName, DataRow dataRow)
     {
-        if (connectionString == null || connectionString.Length == 0) throw new ArgumentNullException("connectionString");
-        if (spName == null || spName.Length == 0) throw new ArgumentNullException("spName");
+        if (connectionString == null || connectionString.Length == 0)
+        {
+            throw new ArgumentNullException("connectionString");
+        }
+        if (spName == null || spName.Length == 0)
+        {
+            throw new ArgumentNullException("spName");
+        }
 
         // If the row has values, the store procedure parameters must be initialized
         if (dataRow != null && dataRow.ItemArray.Length > 0)
@@ -5423,8 +6092,14 @@ partial class DataBaseAccess
     /// <returns>A SqlDataReader containing the resultset generated by the command</returns>
     public static SqlDataReader ExecuteReaderTypedParams(SqlConnection connection, String spName, DataRow dataRow)
     {
-        if (connection == null) throw new ArgumentNullException("connection");
-        if (spName == null || spName.Length == 0) throw new ArgumentNullException("spName");
+        if (connection == null)
+        {
+            throw new ArgumentNullException("connection");
+        }
+        if (spName == null || spName.Length == 0)
+        {
+            throw new ArgumentNullException("spName");
+        }
 
         // If the row has values, the store procedure parameters must be initialized
         if (dataRow != null && dataRow.ItemArray.Length > 0)
@@ -5455,9 +6130,18 @@ partial class DataBaseAccess
     /// <returns>A SqlDataReader containing the resultset generated by the command</returns>
     public static SqlDataReader ExecuteReaderTypedParams(SqlTransaction transaction, String spName, DataRow dataRow)
     {
-        if (transaction == null) throw new ArgumentNullException("transaction");
-        if (transaction != null && transaction.Connection == null) throw new ArgumentException("The transaction was rollbacked or commited, please provide an open transaction.", "transaction");
-        if (spName == null || spName.Length == 0) throw new ArgumentNullException("spName");
+        if (transaction == null)
+        {
+            throw new ArgumentNullException("transaction");
+        }
+        if (transaction != null && transaction.Connection == null)
+        {
+            throw new ArgumentException("The transaction was rollbacked or commited, please provide an open transaction.", "transaction");
+        }
+        if (spName == null || spName.Length == 0)
+        {
+            throw new ArgumentNullException("spName");
+        }
 
         // If the row has values, the store procedure parameters must be initialized
         if (dataRow != null && dataRow.ItemArray.Length > 0)
@@ -5490,8 +6174,14 @@ partial class DataBaseAccess
     /// <returns>An object containing the value in the 1x1 resultset generated by the command</returns>
     public static object ExecuteScalarTypedParams(String connectionString, String spName, DataRow dataRow)
     {
-        if (connectionString == null || connectionString.Length == 0) throw new ArgumentNullException("connectionString");
-        if (spName == null || spName.Length == 0) throw new ArgumentNullException("spName");
+        if (connectionString == null || connectionString.Length == 0)
+        {
+            throw new ArgumentNullException("connectionString");
+        }
+        if (spName == null || spName.Length == 0)
+        {
+            throw new ArgumentNullException("spName");
+        }
 
         // If the row has values, the store procedure parameters must be initialized
         if (dataRow != null && dataRow.ItemArray.Length > 0)
@@ -5522,8 +6212,14 @@ partial class DataBaseAccess
     /// <returns>An object containing the value in the 1x1 resultset generated by the command</returns>
     public static object ExecuteScalarTypedParams(SqlConnection connection, String spName, DataRow dataRow)
     {
-        if (connection == null) throw new ArgumentNullException("connection");
-        if (spName == null || spName.Length == 0) throw new ArgumentNullException("spName");
+        if (connection == null)
+        {
+            throw new ArgumentNullException("connection");
+        }
+        if (spName == null || spName.Length == 0)
+        {
+            throw new ArgumentNullException("spName");
+        }
 
         // If the row has values, the store procedure parameters must be initialized
         if (dataRow != null && dataRow.ItemArray.Length > 0)
@@ -5554,9 +6250,18 @@ partial class DataBaseAccess
     /// <returns>An object containing the value in the 1x1 resultset generated by the command</returns>
     public static object ExecuteScalarTypedParams(SqlTransaction transaction, String spName, DataRow dataRow)
     {
-        if (transaction == null) throw new ArgumentNullException("transaction");
-        if (transaction != null && transaction.Connection == null) throw new ArgumentException("The transaction was rollbacked or commited, please provide an open transaction.", "transaction");
-        if (spName == null || spName.Length == 0) throw new ArgumentNullException("spName");
+        if (transaction == null)
+        {
+            throw new ArgumentNullException("transaction");
+        }
+        if (transaction != null && transaction.Connection == null)
+        {
+            throw new ArgumentException("The transaction was rollbacked or commited, please provide an open transaction.", "transaction");
+        }
+        if (spName == null || spName.Length == 0)
+        {
+            throw new ArgumentNullException("spName");
+        }
 
         // If the row has values, the store procedure parameters must be initialized
         if (dataRow != null && dataRow.ItemArray.Length > 0)
@@ -5589,8 +6294,14 @@ partial class DataBaseAccess
     /// <returns>An XmlReader containing the resultset generated by the command</returns>
     public static XmlReader ExecuteXmlReaderTypedParams(SqlConnection connection, String spName, DataRow dataRow)
     {
-        if (connection == null) throw new ArgumentNullException("connection");
-        if (spName == null || spName.Length == 0) throw new ArgumentNullException("spName");
+        if (connection == null)
+        {
+            throw new ArgumentNullException("connection");
+        }
+        if (spName == null || spName.Length == 0)
+        {
+            throw new ArgumentNullException("spName");
+        }
 
         // If the row has values, the store procedure parameters must be initialized
         if (dataRow != null && dataRow.ItemArray.Length > 0)
@@ -5621,9 +6332,18 @@ partial class DataBaseAccess
     /// <returns>An XmlReader containing the resultset generated by the command</returns>
     public static XmlReader ExecuteXmlReaderTypedParams(SqlTransaction transaction, String spName, DataRow dataRow)
     {
-        if (transaction == null) throw new ArgumentNullException("transaction");
-        if (transaction != null && transaction.Connection == null) throw new ArgumentException("The transaction was rollbacked or commited, please provide an open transaction.", "transaction");
-        if (spName == null || spName.Length == 0) throw new ArgumentNullException("spName");
+        if (transaction == null)
+        {
+            throw new ArgumentNullException("transaction");
+        }
+        if (transaction != null && transaction.Connection == null)
+        {
+            throw new ArgumentException("The transaction was rollbacked or commited, please provide an open transaction.", "transaction");
+        }
+        if (spName == null || spName.Length == 0)
+        {
+            throw new ArgumentNullException("spName");
+        }
 
         // If the row has values, the store procedure parameters must be initialized
         if (dataRow != null && dataRow.ItemArray.Length > 0)
@@ -5793,13 +6513,19 @@ partial class DataBaseAccess
         SqlParameter param;
 
         if (Size > 0)
+        {
             param = new SqlParameter(ParamName, DbType, Size);
+        }
         else
+        {
             param = new SqlParameter(ParamName, DbType);
+        }
 
         param.Direction = Direction;
         if (!(Direction == ParameterDirection.Output && Value == null))
+        {
             param.Value = Value;
+        }
 
         return param;
     }
@@ -5828,8 +6554,14 @@ sealed class ParamsCache
     /// <returns>The parameter array discovered.</returns>
     private static SqlParameter[] DiscoverSpParameterSet(SqlConnection connection, string spName, bool includeReturnValueParameter)
     {
-        if (connection == null) throw new ArgumentNullException("connection");
-        if (spName == null || spName.Length == 0) throw new ArgumentNullException("spName");
+        if (connection == null)
+        {
+            throw new ArgumentNullException("connection");
+        }
+        if (spName == null || spName.Length == 0)
+        {
+            throw new ArgumentNullException("spName");
+        }
 
         SqlCommand cmd = new SqlCommand(spName, connection);
         cmd.CommandType = CommandType.StoredProcedure;
@@ -5884,8 +6616,14 @@ sealed class ParamsCache
     /// <param name="commandParameters">An array of SqlParamters to be cached</param>
     public static void CacheParameterSet(string connectionString, string commandText, params SqlParameter[] commandParameters)
     {
-        if (connectionString == null || connectionString.Length == 0) throw new ArgumentNullException("connectionString");
-        if (commandText == null || commandText.Length == 0) throw new ArgumentNullException("commandText");
+        if (connectionString == null || connectionString.Length == 0)
+        {
+            throw new ArgumentNullException("connectionString");
+        }
+        if (commandText == null || commandText.Length == 0)
+        {
+            throw new ArgumentNullException("commandText");
+        }
 
         string hashKey = connectionString + ":" + commandText;
 
@@ -5900,8 +6638,14 @@ sealed class ParamsCache
     /// <returns>An array of SqlParamters</returns>
     public static SqlParameter[] GetCachedParameterSet(string connectionString, string commandText)
     {
-        if (connectionString == null || connectionString.Length == 0) throw new ArgumentNullException("connectionString");
-        if (commandText == null || commandText.Length == 0) throw new ArgumentNullException("commandText");
+        if (connectionString == null || connectionString.Length == 0)
+        {
+            throw new ArgumentNullException("connectionString");
+        }
+        if (commandText == null || commandText.Length == 0)
+        {
+            throw new ArgumentNullException("commandText");
+        }
 
         string hashKey = connectionString + ":" + commandText;
 
@@ -5916,7 +6660,7 @@ sealed class ParamsCache
         }
     }
     /// <summary>
-    /// 得到缓存中的存储过程参数。如果能得到,返回true,并out 参数出来,不能得到,则parms = null,返回false;
+    /// 得到缓存中的存储过程参数。如果能得到,返回true,并out参数出来,不能得到,则parms = null,返回false;
     /// </summary>
     /// <param name="connectiongString"></param>
     /// <param name="spName"></param>
@@ -5925,8 +6669,14 @@ sealed class ParamsCache
     public static bool GetCachedParameterSet(string connectionString, string spName, out SqlParameter[] parms)
     {
         bool hasCached = false;
-        if (connectionString == null || connectionString.Length == 0) throw new ArgumentNullException("connectionString");
-        if (spName == null || spName.Length == 0) throw new ArgumentNullException("spName");
+        if (connectionString == null || connectionString.Length == 0)
+        {
+            throw new ArgumentNullException("connectionString");
+        }
+        if (spName == null || spName.Length == 0)
+        {
+            throw new ArgumentNullException("spName");
+        }
         string hashKey = connectionString + ":" + spName;
 
         SqlParameter[] cachedParameters = paramCache[hashKey] as SqlParameter[];
@@ -5942,6 +6692,7 @@ sealed class ParamsCache
         }
         return hasCached;
     }
+
 
     #endregion caching functions
 
@@ -5973,8 +6724,14 @@ sealed class ParamsCache
     /// <returns>An array of SqlParameters</returns>
     public static SqlParameter[] GetSpParameterSet(string connectionString, string spName, bool includeReturnValueParameter)
     {
-        if (connectionString == null || connectionString.Length == 0) throw new ArgumentNullException("connectionString");
-        if (spName == null || spName.Length == 0) throw new ArgumentNullException("spName");
+        if (connectionString == null || connectionString.Length == 0)
+        {
+            throw new ArgumentNullException("connectionString");
+        }
+        if (spName == null || spName.Length == 0)
+        {
+            throw new ArgumentNullException("spName");
+        }
 
         using (SqlConnection connection = new SqlConnection(connectionString))
         {
@@ -6008,7 +6765,10 @@ sealed class ParamsCache
     /// <returns>An array of SqlParameters</returns>
     internal static SqlParameter[] GetSpParameterSet(SqlConnection connection, string spName, bool includeReturnValueParameter)
     {
-        if (connection == null) throw new ArgumentNullException("connection");
+        if (connection == null)
+        {
+            throw new ArgumentNullException("connection");
+        }
         using (SqlConnection clonedConnection = (SqlConnection)((ICloneable)connection).Clone())
         {
             return GetSpParameterSetInternal(clonedConnection, spName, includeReturnValueParameter);
@@ -6024,8 +6784,14 @@ sealed class ParamsCache
     /// <returns>An array of SqlParameters</returns>
     private static SqlParameter[] GetSpParameterSetInternal(SqlConnection connection, string spName, bool includeReturnValueParameter)
     {
-        if (connection == null) throw new ArgumentNullException("connection");
-        if (spName == null || spName.Length == 0) throw new ArgumentNullException("spName");
+        if (connection == null)
+        {
+            throw new ArgumentNullException("connection");
+        }
+        if (spName == null || spName.Length == 0)
+        {
+            throw new ArgumentNullException("spName");
+        }
 
         string hashKey = connection.ConnectionString + ":" + spName + (includeReturnValueParameter ? ":include ReturnValue Parameter" : "");
 
