@@ -30,7 +30,7 @@ namespace PHConsultant.Common
         #region private utility methods & constructors
 
         // Since this class provides only static methods, make the default constructor private to prevent 
-        // instances from being created with "new Database()"
+        // instances from being created with "new DBHelper()"
         private DBHelper() { }
 
         /// <summary>
