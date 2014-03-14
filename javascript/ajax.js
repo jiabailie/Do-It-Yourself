@@ -28,7 +28,7 @@ function CreateHttpRequest() {
 	throw new Error("XMLHttp object could be created.");
 }
 
-function GetWebService(url,querystring,paramtype) {
+function GetWebService(url, querystring) {
     var xmlHttp = CreateHttpRequest();
     xmlHttp.open('POST', url, false);
     xmlHttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
