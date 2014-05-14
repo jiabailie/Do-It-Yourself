@@ -56,11 +56,11 @@ $.fn.autocomplete = function (auto, showList, hideList, requestUrl, parameter) {
         } else { // end if(myCode)
             var items = auto.children("div");
             switch (myCode) {
-                // up                                                                               
+                // up
                 case 38:
                     upHighlight(items);
                     break;
-                // down                                                        
+                // down
                 case 40:
                     downHighlight(items);
                     break;
@@ -203,7 +203,7 @@ $.fn.autocomplete = function (auto, showList, hideList, requestUrl, parameter) {
 
                     // mouse over
                     divTemp.mouseover(function () {
-                        mouseoverHighlight(items, $(this));   //这里不能直接使用 divTemp
+                        mouseoverHighlight(items, $(this));
                     });
                     // mouse out
                     divTemp.mouseout(function () {
