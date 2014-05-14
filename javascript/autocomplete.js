@@ -1,6 +1,7 @@
 ﻿/**
  * Function:   Auto Complete.
  * References: xiaohaizhu83.blog.163.com/blog/static/309742201081921034238
+ * Dependency: jQuery.js
  * @param auto: <div> to show the content.
  * @param showList: <div> to show the select row.
  * @param hideList: When Enter is pressed or certain is selected, using this control to show the content.
