@@ -2,11 +2,15 @@
  * Function:   Auto Complete.
  * References: xiaohaizhu83.blog.163.com/blog/static/309742201081921034238
  * @param auto: <div> to show the content.
- * @param hideValue: When Enter is pressed or certain is selected, using this control to show the content.
+ * @param showList: <div> to show the select row.
+ * @param hideList: When Enter is pressed or certain is selected, using this control to show the content.
  * @param requestUrl: The url to send ajax request.
  * @param parameter: The attributes' name of showing and hiding.
  */
-$.fn.autocomplete = function (auto, hideValue, requestUrl, parameter) {
+String.prototype.Trim = function () {
+    return this.replace(/(^\s*)|(\s*$)/g, "");
+}
+$.fn.autocomplete = function (auto, showList, hideList, requestUrl, parameter) {
     // Whether the input parameters are valid.
     if (!(auto && auto instanceof jQuery && requestUrl && typeof requestUrl == "string" && parameter && parameter instanceof Object)) {
         return this;
@@ -32,9 +36,10 @@ $.fn.autocomplete = function (auto, hideValue, requestUrl, parameter) {
     txt.keyup(function (event) {
         var myEvent = event || window.event;
         var myCode = event.keyCode;
-        if (myCode >= 65 && myCode <= 90 || myCode == 8 || myCode == 46) {
+        if (myCode >= 65 && myCode <= 90 || myCode >= 97 && myCode <= 122 || myCode == 8 || myCode == 32 || myCode == 46) {
             // Fetch the contents of text box.
             var word = $(this).val();
+            word = word.Trim();
             // Hide current <div>, and remove the cursor.
             divAutoHidden();
             // If current textbox is blank, stop the request.
@@ -50,15 +55,15 @@ $.fn.autocomplete = function (auto, hideValue, requestUrl, parameter) {
         } else { // end if(myCode)
             var items = auto.children("div");
             switch (myCode) {
-                // up                                                                
+                // up                                                                               
                 case 38:
                     upHighlight(items);
                     break;
-                // down                                         
+                // down                                                        
                 case 40:
                     downHighlight(items);
                     break;
-                // enter             
+                // enter                            
                 case 13:
                     enter(items);
                     break;
@@ -111,15 +116,35 @@ $.fn.autocomplete = function (auto, hideValue, requestUrl, parameter) {
         setCurrentHighlight(items);
     } //end down highlight
 
+    // Judge whether row has been selected.
+    function contains(row, val) {
+        var str = val.Trim().split(';');
+        for (var i = 0; i < str.length; ++i) {
+            if (str[i] == row) { return true; }
+        }
+        return false;
+    }
+
+    // Append row to show region.
+    function append(row) {
+        var hval = hideList.val();
+        if (!contains(row, hval)) {
+            showList.append('<p>' + row + '<a href="javascript:void(0);" onclick="$(this).parent().remove();" class="s_delete_s1">&times;</a></p>');            
+            // Judge whether set value to hidden 
+            if (hideList && hideList instanceof jQuery) {
+                hideList.val(hval + ";" + row);
+            }
+        }
+        txt.val("");
+    }
+
     // Enter pressed.
     function enter(items) {
         if (highlightIndex >= 0) {
             var temp = items.eq(highlightIndex).text();
             txt.val(temp);
+            append(temp);
 
-            if (hideValue && hideValue instanceof jQuery) {
-                hideValue.val(items.eq(highlightIndex).attr("valuedata"));
-            }
             // Hide <div>, and remove the selected cursor.
             divAutoHidden();
         }
@@ -142,10 +167,8 @@ $.fn.autocomplete = function (auto, hideValue, requestUrl, parameter) {
     // mouse click
     function mouseclickHighlight(currentDiv) {
         txt.val(currentDiv.text());
-        // Judge whether set value to hidden 
-        if (hideValue && hideValue instanceof jQuery) {
-            hideValue.val(currentDiv.attr("valuedata"));
-        }
+        append(currentDiv.text());
+        
         // Hide <div> and remove the selected cursor.
         divAutoHidden();
     }
@@ -204,4 +227,4 @@ $.fn.autocomplete = function (auto, hideValue, requestUrl, parameter) {
     } // end ajaxRequest
 
     return this;
-}   // end fn autocomplete
+}                  // end fn autocomplete
