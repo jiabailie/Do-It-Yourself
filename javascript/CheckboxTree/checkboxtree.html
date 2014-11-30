@@ -81,9 +81,13 @@
                             icon = me.makeImage(icon, "leaf"); //叶子节点前面的装饰图标
                         }
                         childs.push(subtree[i][0]);
+                        if (me.status[currentIndex] == 2) { checkbox0 = me.makeImage("checkbox_1", "checkbox_1"); }
                         children.innerHTML += me.makeTree(subtree[i][0], prefix, +currentLevel + 1, icon + checkbox0, subtree[i][2])
                     }
                     me.childs[currentIndex] = childs;
+                    if (childs != undefined && childs.length > 0 && me.status[currentIndex] == 2) {
+                        for (var i = 0; i < childs.length; ++i) { me.status[childs[i]] = 2; }
+                    }
                     children.className = (currentPrefix == "line") ? "line" : "blank";
                     current.insertBefore(children, null);
                 }
@@ -100,7 +104,7 @@
                     var checked = me.isChecked(node); //如果是true则--,如果是false则++
                     me.status[parseInt(current.getAttribute("index"))] = checked ? 0 : 2;
                     me.setJuniorCheckbox(current, checked)
-                    me.setPriorCheckbox(current, checked); //一开始肯定是checkbox,返回false                    
+                    me.setPriorCheckbox(current, checked); //开始肯定是checkbox,返回false
                 }
             }
         },
