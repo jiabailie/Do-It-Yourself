@@ -1,4 +1,4 @@
-<html>
+﻿<html>
 <head>
     <title>CheckBox Tree</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -8,6 +8,7 @@
         CheckBox Tree</h2>
     <div id="test">
     </div>
+    <input type="button" value="Get Selected Values" onclick="showValue();" />
 </body>
 </html>
 <script type="text/javascript">
@@ -16,6 +17,27 @@
         this.name = "tree";
         this.id = +new Date + parseInt(Math.random() * 100000);
         this.initialize.apply(this, arguments);
+        this.ostatus = [];
+        this.stree = [];
+        this.setChild = function (p, q) {
+            for (var i = 0; i < q.length; ++i) {
+                if (q[i][1] == p) {
+                    this.stree[q[i][0]] = 2;
+                    this.setChild(q[i][0], q);
+                }
+            }
+        };
+        this.getSelectTree = function (p) {
+            this.stree = [];
+            var otree = [];
+            for (var i in this.ostatus) {
+                var j = this.ostatus[i] || 0;
+                if (j > 0) { this.stree[i] = j; }
+                if (j == 2) { this.setChild(i, p); }
+            }
+            for (var i in this.stree) { otree[i] = p[i]; }
+            return otree;
+        };
     }
     Tree.prototype = {
         constructor: Tree,
@@ -106,6 +128,7 @@
                     me.setJuniorCheckbox(current, checked)
                     me.setPriorCheckbox(current, checked); //开始肯定是checkbox,返回false
                 }
+                me.ostatus = me.status;
             }
         },
         setJuniorCheckbox: function (node, /*Boolean*/checked) {
@@ -245,7 +268,11 @@
     [31, 15, "DOM"],
     [32, 15, "BOM"]
   ]
+    var tree;
     window.onload = function () {
-        var tree = new Tree({ renderTo: "test", data: data });
+        tree = new Tree({ renderTo: "test", data: data });
+    }
+    showValue = function () {
+        var msg = tree.getSelectTree(data);
     }
 </script>
