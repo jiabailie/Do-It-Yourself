@@ -148,7 +148,7 @@ Tree.prototype = {
             //当priorIndex等于-1时,
             //priorCheckbox不存在
             //me.childs[priorIndex]为undefined,不存在长度
-            var replaceCheckbox = priorCount == 0 ? "checkbox_0" : (priorCount == this.childs[priorIndex].length ? "checkbox_1" : "checkbox_2");
+            var replaceCheckbox = this.status[priorIndex] == 0 ? "checkbox_0" : (this.status[priorIndex] == 2 ? "checkbox_1" : "checkbox_2");
             //checkbox_1为全选,checkbox_2为非全选
             //全选,则让上级++,即让checked为false
             priorCheckbox.src = priorCheckbox.src.replace(/checkbox_\d/, replaceCheckbox);
