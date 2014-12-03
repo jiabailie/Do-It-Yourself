@@ -188,6 +188,8 @@ Tree.prototype = {
         var builder = [];
         builder.push("<div index='");
         builder.push(index);
+        builder.push("' id='")
+        builder.push("treeNodeDiv" + index);
         builder.push("' prefix='")
         builder.push(prefix);
         builder.push("' level='")
