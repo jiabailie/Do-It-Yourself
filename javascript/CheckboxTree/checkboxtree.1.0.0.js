@@ -28,6 +28,8 @@ Tree.prototype = {
     initialize: function (config) {
         var me = this, renderTo = config.renderTo;
         me.tree = config.data;
+        me.flag = config.flag;
+        me.checked = config.checked;
         me.container = ((typeof renderTo === "string") ?
         document.getElementById(renderTo) : renderTo) || document.body;
         me.panel = document.createElement("div");
@@ -54,7 +56,7 @@ Tree.prototype = {
         } else {
             sheet.appendChild(document.createTextNode(cssCode));
         }
-		//添加根节点
+	//添加根节点
         var icon = me.makeImage("nolines_plus", "collapse root")
         var checkbox0 = me.makeImage("checkbox_0", "checkbox_0");
         me.panel.innerHTML = me.makeTree(me.tree[0][0], "b", 0, icon + checkbox0, me.tree[0][2]);
@@ -113,6 +115,55 @@ Tree.prototype = {
                 me.setPriorCheckbox(current, checked); //开始肯定是checkbox,返回false
             }
             me.ostatus = me.status;
+        }
+        me.unfoldTree(me.panel.childNodes[0]);
+        me.setCheckedNodes();
+    },
+    setCheckedNodes: function () {
+        for (var i in this.checked) {
+            var current = document.getElementById("treeNodeDiv" + this.flag + this.checked[i]);
+            this.status[this.checked[i]] = 2;
+            this.setJuniorCheckbox(current, false);
+            this.setPriorCheckbox(current, false);
+        }
+    },
+    unfoldTree: function (current) {
+        var node = current.childNodes[2];
+        var currentIndex = current.getAttribute("index");
+        var currentPrefix = current.getAttribute("prefix");
+        var currentLevel = current.getAttribute("level");
+        var children = current.children[3];
+        var subtree = this.getSubtree(currentIndex);
+        var checkbox0 = this.makeImage("checkbox_0", "checkbox_0");
+        if (subtree && !children) {
+            children = document.createElement("div");
+            var childs = [];
+            for (var i in subtree) {
+                var isLimb = this.hasSubtree(subtree[i][0]);
+                var isLast = (i == subtree.length - 1);
+                var prefix = isLast ? "blank" : "line";
+                icon = isLast ? "plusbottom" : "plus";
+                if (isLimb) {
+                    icon = this.makeImage(icon, "collapse limb");
+                } else {
+                    icon = icon.replace(/plus/, "join");
+                    icon = this.makeImage(icon, "leaf");
+                }
+                childs.push(subtree[i][0]);
+                if (this.status[currentIndex] == 2) { checkbox0 = this.makeImage("checkbox_1", "checkbox_1"); }
+                children.innerHTML += this.makeTree(subtree[i][0], prefix, +currentLevel + 1, icon + checkbox0, subtree[i][2])
+            }
+            this.childs[currentIndex] = childs;
+            if (childs != undefined && childs.length > 0 && this.status[currentIndex] == 2) {
+                for (var i in childs) { this.status[childs[i]] = 2; }
+            }
+            children.className = (currentPrefix == "line") ? "line" : "blank";
+            current.insertBefore(children, null);
+            for (var i in childs) {
+                var node = document.getElementById("treeNodeDiv" + this.flag + childs[i]);
+                this.unfoldTree(node);
+            }
+            parseInt(currentIndex) != 0 && children && (children.style.display = "none");
         }
     },
     setJuniorCheckbox: function (node, /*Boolean*/checked) {
@@ -189,7 +240,7 @@ Tree.prototype = {
         builder.push("<div index='");
         builder.push(index);
         builder.push("' id='")
-        builder.push("treeNodeDiv" + index);
+        builder.push("treeNodeDiv" + this.flag + index);
         builder.push("' prefix='")
         builder.push(prefix);
         builder.push("' level='")
