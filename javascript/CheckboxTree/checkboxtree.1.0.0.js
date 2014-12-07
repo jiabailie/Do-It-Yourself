@@ -34,7 +34,7 @@ Tree.prototype = {
         me.container = ((typeof renderTo === "string") ?
         document.getElementById(renderTo) : renderTo) || document.body;
         me.panel = document.createElement("div");
-        me.panel.setAttribute("id", "tree" + me.id)
+        me.panel.setAttribute("id", "tree" + me.id);
         me.container.insertBefore(me.panel, null);
         var id = "#" + me.panel.id;
         var sheet = document.createElement('style');
@@ -51,14 +51,14 @@ Tree.prototype = {
                     id + " img.root {padding-right:15px;" + bg + "blank.gif) no-repeat right center;}\n" +
                     id + " img.leaf {padding-right:15px;" + bg + "blank.gif) no-repeat right center;}\n";
         if (! +"\v1") {
-            sheet.styleSheet.cssText = cssCode
+            sheet.styleSheet.cssText = cssCode;
         } else if (/a/[-1] == 'a') {
-            sheet.innerHTML = cssCode
+            sheet.innerHTML = cssCode;
         } else {
             sheet.appendChild(document.createTextNode(cssCode));
         }
         //添加根节点
-        var icon = me.makeImage("nolines_plus", "collapse root")
+        var icon = me.makeImage("nolines_plus", "collapse root");
         var checkbox0 = me.makeImage("checkbox_0", "checkbox_0");
         me.panel.innerHTML = me.makeTree(me.tree[0][0], "b", 0, icon + checkbox0, me.tree[0][2]);
         me.childs = [];
@@ -195,7 +195,7 @@ Tree.prototype = {
                 var children = node.children[3].children;
                 while (--length >= 0) {
                     this.status[this.childs[index][length]] = this.status[index];
-                    this.setJuniorCheckbox(children[length], checked)
+                    this.setJuniorCheckbox(children[length], checked);
                 }
             }
         }
