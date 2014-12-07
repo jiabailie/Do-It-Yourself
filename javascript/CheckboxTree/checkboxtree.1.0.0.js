@@ -2,10 +2,11 @@
 Tree = function () {
     this.path = "icon/o_";
     this.name = "tree";
-    this.id = +new Date + parseInt(Math.random() * 100000);
-    this.initialize.apply(this, arguments);
     this.ostatus = [];
     this.stree = [];
+    this.id = +new Date + parseInt(Math.random() * 100000);
+    this.initialize.apply(this, arguments);
+
     this.setChild = function (p, q) {
         for (var i in q) {
             if (q[i][1] == p) { this.stree[q[i][0]] = 2; this.setChild(q[i][0], q); }
@@ -119,6 +120,7 @@ Tree.prototype = {
         me.unfoldTree(me.panel.childNodes[0]);
         me.filterCheckedNodes();
         me.setCheckedNodes();
+        me.ostatus = me.status;
     },
     // Remove nodes which are not leaf nodes.
     filterCheckedNodes: function () {
