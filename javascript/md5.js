@@ -50,10 +50,10 @@ function core_md5(x, len)
 
   for(var i = 0; i < x.length; i += 16)
   {
-    var ōlda = a;
-    var ōldb = b;
-    var ōldc = c;
-    var ōldd = d;
+    var olda = a;
+    var oldb = b;
+    var oldc = c;
+    var oldd = d;
 
     a = md5_ff(a, b, c, d, x[i+ 0], 7 , -680876936);
     d = md5_ff(d, a, b, c, x[i+ 1], 12, -389564586);
