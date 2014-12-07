@@ -56,7 +56,7 @@ Tree.prototype = {
         } else {
             sheet.appendChild(document.createTextNode(cssCode));
         }
-	//添加根节点
+        //添加根节点
         var icon = me.makeImage("nolines_plus", "collapse root")
         var checkbox0 = me.makeImage("checkbox_0", "checkbox_0");
         me.panel.innerHTML = me.makeTree(me.tree[0][0], "b", 0, icon + checkbox0, me.tree[0][2]);
@@ -112,12 +112,25 @@ Tree.prototype = {
                 var checked = me.isChecked(node); //如果是true则--,如果是false则++
                 me.status[parseInt(current.getAttribute("index"))] = checked ? 0 : 2;
                 me.setJuniorCheckbox(current, checked)
-                me.setPriorCheckbox(current, checked); //开始肯定是checkbox,返回false
+                me.setPriorCheckbox(current, checked);
             }
             me.ostatus = me.status;
         }
         me.unfoldTree(me.panel.childNodes[0]);
+        me.filterCheckedNodes();
         me.setCheckedNodes();
+    },
+    // Remove nodes which are not leaf nodes.
+    filterCheckedNodes: function () {
+        var idx = 0;
+        var copy = this.checked;
+        this.checked = [];
+        for (var i in copy) {
+            if (this.childs[copy[i]].length == 0) {
+                this.checked[idx] = copy[i];
+                idx += 1;
+            }
+        }
     },
     setCheckedNodes: function () {
         for (var i in this.checked) {
