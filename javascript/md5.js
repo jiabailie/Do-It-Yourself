@@ -234,10 +234,3 @@ function binl2b64(binarray) {
     }
     return str;
 }
-
-/*
- * An example show how use it.
- */
-function testExample(input) {
-    var encrypt = hex_md5(input);
-}
