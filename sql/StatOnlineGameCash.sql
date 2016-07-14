@@ -73,7 +73,7 @@ BEGIN
 	);	
 
 	------ 这个查询语句结果是 [用户ID][该用户本次返利额]=该层总金额/该层总人数
-	open User_cur ;
+	open User_cur;
 
 	---遍历那些符合要求的同学-------
 	while @@fetch_status = 0
