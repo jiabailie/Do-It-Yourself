@@ -41,17 +41,17 @@ void list_dir_find_file(const char* dir_name, const char* file_name)
         if (entry->d_type & DT_DIR) 
         {
             /* Check that the directory is not "d" or d's parent. */
-            if (strcmp(d_name, "..") != 0 &&
-                strcmp(d_name, ".") != 0)
+            if (strcmp(d_name, "..") != 0 && strcmp(d_name, ".") != 0)
+            {
+                int path_length;
+                char path[PATH_MAX];
+                
+                path_length = snprintf(path, PATH_MAX,
+                    "%s/%s", dir_name, d_name);
+                if (path_length >= PATH_MAX) 
                 {
-                    int path_length;
-                    char path[PATH_MAX];
-                    
-                    path_length = snprintf(path, PATH_MAX,
-                        "%s/%s", dir_name, d_name);
-                    if (path_length >= PATH_MAX) {
-                        fprintf(stderr, "Path length has got too long.\n");
-                        exit(EXIT_FAILURE);
+                    fprintf(stderr, "Path length has got too long.\n");
+                    exit(EXIT_FAILURE);
                 }
                 /* Recursively call "list_dir_find_file" with the new path. */
                 list_dir_find_file(path, file_name);
@@ -67,7 +67,8 @@ void list_dir_find_file(const char* dir_name, const char* file_name)
         }
     }
     /* After going through all the entries, close the directory. */
-    if (closedir(d)) {
+    if (closedir(d)) 
+    {
         fprintf(stderr, "Could not close '%s': %s\n",
             dir_name, strerror(errno));
         exit(EXIT_FAILURE);
