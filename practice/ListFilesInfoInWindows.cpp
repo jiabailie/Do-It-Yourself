@@ -19,7 +19,7 @@ int main()
         exit(1);
     }
 
-    // Find first .c file in current directory 
+    // Find first file in current directory 
     if ((hFile = _findfirst("*.*", &c_file)) == -1L)
     {
         printf("No *.c files in current directory!\n");
