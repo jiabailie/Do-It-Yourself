@@ -8,4 +8,4 @@ Do It Yourself
 
 我会慢慢把这个库丰富起来，感兴趣的同学可以一起来，这样大家要用的时候可以拿来就可以直接开始添加自己业务逻辑。
 
-![Tyre Planet](img/planet-qr.jpg "欢迎加入轮子星球"){height=50% width=50%}
+![Wheel Planet](img/planet-qr.jpg "欢迎加入轮子星球")
