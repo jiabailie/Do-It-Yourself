@@ -7,3 +7,5 @@ Do It Yourself
 这个代码库用来写一些常用的应用程序原型，比如一个最简单的RESTful Service，使用不同语言来写。
 
 我会慢慢把这个库丰富起来，感兴趣的同学可以一起来，这样大家要用的时候可以拿来就可以直接开始添加自己业务逻辑。
+
+![Tyre Planet](img/planet-qr.jpg "欢迎加入轮子星球"){height=50% width=50%}
