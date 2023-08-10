@@ -1,22 +1,5 @@
-Collections
+Do It Yourself
 ===========
-
-Collect some code segments and maybe used in the future.
-
-/sql
-some useful sql segments, which can reminds me the functions and code structures.
-
-/javascript
-man-made js general libraries.
-
-/csharp
-self coded csharp general libraries.
-
-/cpp
-just some code segments.
-
-/configuration
-some configuration files, which can be used for environment setting.
-
-/gobang
-a gobang game code by javascript, which comes from internet.
+万事开头难，今天你造轮子了没有？
+这个代码库用来写一些常用的应用原型，比如一个最简单的RESTful Service，使用不同语言来写。
+我会慢慢把这个库丰富起来，感兴趣的同学可以一起来，这样大家要用的时候可以拿来就可以直接开始加逻辑。
